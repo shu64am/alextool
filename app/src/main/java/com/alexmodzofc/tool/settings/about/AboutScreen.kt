@@ -28,7 +28,7 @@ import com.alexmodzofc.tool.ui.theme.AlexToolColors
 import com.alexmodzofc.tool.ui.theme.LocalAlexToolColors
 
 private const val AUTHOR_URL = "https://github.com/shu64am"
-private const val GITHUB_URL = "https://github.com/shu64am/alex-tool"
+private const val GITHUB_URL = "https://github.com/shu64am/alextool"
 private const val TELEGRAM_CHANNEL_URL = "https://t.me/alexmodzofc"
 private const val TELEGRAM_GROUP_URL = "https://t.me/chatgroup24x7"
 private const val LICENSE_URL = "https://www.gnu.org/licenses/gpl-3.0.html"

@@ -625,7 +625,7 @@ fun DebugPane(activity: SettingsActivity) {
             }
         },
         onOpenGithub = {
-            runCatching { activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/shu64am/alex-tool/issues/new"))) }
+            runCatching { activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/shu64am/alextool/issues/new"))) }
         }
     )
 }

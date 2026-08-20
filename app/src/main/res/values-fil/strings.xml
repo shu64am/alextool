@@ -66,9 +66,8 @@
     <string name="about_license_text">Ang source code ng proyektong ito ay lisensyado sa ilalim ng GNU General Public License v3.0 (GPLv3).\n\nAng mga pangalang \"AlexTool\" at \"AlexTool,\" ang logo, mga screenshot, at lahat ng kaugnay na branding asset ay mga trademark o proprietary asset ng may-akda at hindi kasama sa lisensyang GPL. Kailangan ng tahasang pahintulot mula sa may-akda para magamit ang mga asset na ito.</string>
     <string name="about_license_link_label">Tingnan ang GPL v3.0 license \u2197</string>
     <string name="about_opensource_text">Bukas sa publiko ang kumpletong source code sa GitHub. Malugod na tinatanggap ang mga kontribusyon, ulat ng bug, at kahilingan ng feature.</string>
-    <string name="about_github_url">github.com/shu64am/alex-tool \u2197</string>
+    <string name="about_github_url">github.com/shu64am/alextool \u2197</string>
     <string name="about_donate_text">Palaging magiging libre, walang ad, at open source ang AlexTool. Ginawa at pinapanatili ito ng isang kolehiyalang estudyante sa kanyang libreng oras. Kung nakikita mong kapaki-pakinabang ito, isaalang-alang ang pagsuporta sa development nito.</string>
-    <string name="about_kofi_url">github.com/shu64am/alex-tool \u2197</string>
     <string name="about_paypal_url">github.com/shu64am \u2197</string>
     <string name="default_browser_title">Default na Browser</string>
     <string name="default_browser_none">Wala</string>
@@ -618,7 +617,7 @@
     <string name="about_community_discord_label">Discord</string>
     <string name="about_community_discord_url">discord.gg/4kUe4yPQ32</string>
     <string name="about_community_reddit_label">Reddit</string>
-    <string name="about_community_reddit_url">github.com/shu64am/alex-tool</string>
+    <string name="about_community_reddit_url">github.com/shu64am/alextool</string>
     <string name="about_donate_patreon_label">Patreon</string>
     <string name="about_donate_kofi_label">Ko-fi</string>
     <string name="about_donate_paypal_label">PayPal</string>

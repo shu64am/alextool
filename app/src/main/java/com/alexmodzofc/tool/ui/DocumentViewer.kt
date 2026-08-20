@@ -23,13 +23,13 @@ object DocumentViewer {
     private val mainHandler = Handler(Looper.getMainLooper())
 
     const val PRIVACY_POLICY_URL =
-        "https://raw.githubusercontent.com/shu64am/alex-tool/main/PRIVACY_POLICY.md"
+        "https://raw.githubusercontent.com/shu64am/alextool/main/app/src/main/assets/privacy_policy.md"
     const val TERMS_URL =
-        "https://raw.githubusercontent.com/shu64am/alex-tool/main/TERMS_OF_SERVICE.md"
+        "https://raw.githubusercontent.com/shu64am/alextool/main/app/src/main/assets/terms_of_service.md"
     const val CHANGELOG_URL =
-        "https://raw.githubusercontent.com/shu64am/alex-tool/main/CHANGELOG.md"
+        "https://raw.githubusercontent.com/shu64am/alextool/main/CHANGELOG.md"
     const val ATTRIBUTION_URL =
-        "https://raw.githubusercontent.com/shu64am/alex-tool/main/Attribution.md"
+        "https://raw.githubusercontent.com/shu64am/alextool/main/Attribution.md"
 
     private fun Context.findActivity(): Activity? {
         var ctx = this
@@ -60,11 +60,7 @@ object DocumentViewer {
 
         executor.submit {
             try {
-                val request = Request.Builder().url(url).build()
-                val markdown = client.newCall(request).execute().use { response ->
-                    if (!response.isSuccessful) throw Exception("HTTP ${response.code}")
-                    response.body.string()
-                }
+                val markdown = loadDocument(context, url)
                 mainHandler.post {
                     state.markdown = markdown
                     state.isLoading = false
@@ -76,5 +72,29 @@ object DocumentViewer {
                 }
             }
         }
+    }
+
+    /** Loads a document: bundled asset first (works offline), then falls back to the network URL. */
+    private fun loadDocument(context: Context, url: String): String {
+        val bundled = bundledAssetFor(url)
+        if (bundled != null) {
+            runCatching {
+                context.assets.open(bundled).bufferedReader().use { it.readText() }
+            }.let { result ->
+                if (result.isSuccess) return result.getOrThrow()
+            }
+        }
+        val request = Request.Builder().url(url).build()
+        val response = client.newCall(request).execute()
+        if (!response.isSuccessful) throw Exception("HTTP ${response.code}")
+        return response.body.string()
+    }
+
+    private fun bundledAssetFor(url: String): String? = when {
+        url.contains("PRIVACY_POLICY") -> "privacy_policy.md"
+        url.contains("TERMS_OF_SERVICE") -> "terms_of_service.md"
+        url.contains("CHANGELOG") -> "changelog.md"
+        url.contains("Attribution") -> "attribution.md"
+        else -> null
     }
 }

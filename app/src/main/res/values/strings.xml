@@ -65,7 +65,7 @@
     <string name="about_license_text">The source code of this project is licensed under the GNU General Public License v3.0 (GPLv3).\n\nThe names \"AlexTool\" and \"AlexTool,\" the logo, screenshots, and all related branding assets are trademarks or proprietary assets of the author and are not licensed under the GPL. Use of these assets requires explicit permission from the author.</string>
     <string name="about_license_link_label">View GPL v3.0 license \u2197</string>
     <string name="about_opensource_text">The full source code is publicly available on GitHub. Contributions, bug reports, and feature requests are welcome.</string>
-    <string name="about_github_url">github.com/shu64am/alex-tool \u2197</string>
+    <string name="about_github_url">github.com/shu64am/alextool \u2197</string>
     <string name="default_browser_title">Default Browser</string>
     <string name="default_browser_none">None</string>
     <string name="look_and_feel">Look &amp; Feel</string>

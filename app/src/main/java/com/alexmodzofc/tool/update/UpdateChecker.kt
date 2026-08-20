@@ -81,7 +81,7 @@ object UpdateChecker {
                     onDownload = { url, versionCode -> startDownload(activity, url, versionCode, state, dismiss) },
                     onViewGithub = {
                         activity.startActivity(
-                            Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/shu64am/alex-tool/releases"))
+                            Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/shu64am/alextool/releases"))
                         )
                         dismiss()
                     },

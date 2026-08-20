@@ -39,8 +39,6 @@ class SetupActivity : AlexToolActivity(), OverlayHostActivity {
     }
 
     companion object {
-        const val PRIVACY_POLICY_URL = "https://github.com/shu64am/alex-tool/blob/main/README.md"
-        const val TERMS_URL = "https://github.com/shu64am/alex-tool/blob/main/README.md"
         private const val KEY_PENDING_PAGE = "setup_pending_page"
         private const val KEY_PENDING_SCROLL = "setup_pending_scroll"
         private const val KEY_PENDING_HIDE_STATUS_BAR = "setup_pending_hide_status_bar"
