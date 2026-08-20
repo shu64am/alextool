@@ -412,8 +412,12 @@ class MainActivity : AlexToolActivity(), OverlayHostActivity, SnackbarHostActivi
         val toolingUrl = intent.getStringExtra(com.alexmodzofc.tool.settings.SettingsActivity.EXTRA_OPEN_URL)
         if (!toolingUrl.isNullOrEmpty()) {
             setIntent(android.content.Intent())
-            restoreTabs()
-            loadUrl(toolingUrl)
+            // v1.2.28: load the bypass link in ONE fresh tab without restoring
+            // the previous session — restoring re-created the tab that already
+            // held the used link, causing the site's "LINK USED" error.
+            clearTabsSilently()
+            openNewTab(isIncognito = false, url = toolingUrl)
+            return
         }
                 setupBackPressedDispatcher()
     }
@@ -445,8 +449,11 @@ class MainActivity : AlexToolActivity(), OverlayHostActivity, SnackbarHostActivi
         val toolingUrl = intent.getStringExtra(com.alexmodzofc.tool.settings.SettingsActivity.EXTRA_OPEN_URL)
         if (!toolingUrl.isNullOrEmpty()) {
             setIntent(android.content.Intent())
-            restoreTabs()
-            loadUrl(toolingUrl)
+            // v1.2.28: same-tab isolated flow — don't restore the previous
+            // session (its tab already used the link) before opening the
+            // bypass target.
+            clearTabsSilently()
+            openNewTab(isIncognito = false, url = toolingUrl)
             return
         }
         val url = getUrlFromIntent(intent)

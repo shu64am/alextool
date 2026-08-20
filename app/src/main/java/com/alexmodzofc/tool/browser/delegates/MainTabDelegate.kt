@@ -242,3 +242,24 @@ internal fun MainActivity.closePopupTabToOpener(tab: BrowserTab): Boolean {
     attachActiveWebView()
     return true
 }
+
+/**
+ * v1.2.28: removes all current tabs WITHOUT re-loading their saved URLs. Used before opening a
+ * bypass (alextrick) link from a deep link / intent so the restored tab that already used the
+ * link never re-requests it (which is what triggered the site's "LINK USED" error). The saved
+ * tab session on disk is left intact so a normal app launch can still restore later.
+ */
+internal fun MainActivity.clearTabsSilently() {
+    if (tabManager.tabs.isEmpty()) return
+    // Snapshot first: closeTab shifts indices, so we clean up each tab from
+    // the snapshot and always remove index 0 until the list is drained.
+    val snapshot = ArrayList(tabManager.tabs)
+    for (tab in snapshot) {
+        removeDesktopScript(tab)
+        onQuiverGuardTabClosed(tab)
+        if (!tab.isIncognito) com.alexmodzofc.tool.ui.FaviconCache.evict(this, tab.url)
+        if (tabManager.tabs.isNotEmpty()) tabManager.closeTab(0)
+    }
+    // Drain anything still left (defensive).
+    while (tabManager.tabs.isNotEmpty()) tabManager.closeTab(0)
+}
