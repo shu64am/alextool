@@ -220,7 +220,9 @@ class AlexToolWebViewClient(
             val target = runCatching { ExtraToolingManager.decodeToolingTarget(uri.toString()) }.getOrNull()
             if (target != null) {
                 val referer = uri.scheme + "://" + (uri.host ?: "") + "/"
-                val headers = mapOf("Referer" to referer, "Origin" to referer)
+                // Mirror the reference toolkit exactly: Referer carries the
+                // trailing slash, Origin is scheme://host with no slash.
+                val headers = mapOf("Referer" to referer, "Origin" to uri.scheme + "://" + (uri.host ?: ""))
                 view.loadUrl(target, headers)
                 return true
             }

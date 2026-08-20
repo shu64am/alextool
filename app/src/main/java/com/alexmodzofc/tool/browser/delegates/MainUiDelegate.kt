@@ -173,15 +173,17 @@ internal fun MainActivity.loadUrl(input: String) {
     // decode the wrapped target from a alextrick URL and load the decoded
     // target directly so the synthetic /links path is never requested from
     // the upstream server (prevents the upstream 404 page).
-    val toolingTarget = runCatching { com.alexmodzofc.tool.extratooling.ExtraToolingManager.decodeToolingTarget(url) }.getOrNull()
+        val toolingTarget = runCatching { com.alexmodzofc.tool.extratooling.ExtraToolingManager.decodeToolingTarget(url) }.getOrNull()
     if (toolingTarget != null) {
         tabManager.activeTab?.url = toolingTarget
-        val referer = runCatching {
-            val u = android.net.Uri.parse(url)
-            u.scheme + "://" + (u.host ?: "") + "/"
-        }.getOrNull() ?: ""
+        val u = runCatching { android.net.Uri.parse(url) }.getOrNull()
+        val referer = if (u != null) u.scheme + "://" + (u.host ?: "") + "/" else ""
+        val origin = if (u != null) u.scheme + "://" + (u.host ?: "") else ""
+        // Mirror the reference toolkit exactly: Referer carries the trailing
+        // slash, Origin is scheme://host with no slash.
         val headers = buildDesktopHeaders()?.toMutableMap() ?: mutableMapOf()
-        if (referer.isNotEmpty()) { headers["Referer"] = referer; headers["Origin"] = referer }
+        if (referer.isNotEmpty()) { headers["Referer"] = referer }
+        if (origin.isNotEmpty()) { headers["Origin"] = origin }
         updateAddressBar(toolingTarget)
         wv.loadUrl(toolingTarget, headers)
         hideKeyboardOnly()

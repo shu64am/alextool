@@ -871,12 +871,14 @@ private fun ScriptEditDialog(
             textStyle = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
             shape = RoundedCornerShape(12.dp),
             colors = TextFieldDefaults.colors(
-                focusedTextColor = colors.onSurface,
-                unfocusedTextColor = colors.onSurface,
-                focusedContainerColor = colors.surfaceVariant,
-                unfocusedContainerColor = colors.surfaceVariant,
+                focusedTextColor = if (colors.isLight) Color.Black else Color(0xFFF0F0F0),
+                unfocusedTextColor = if (colors.isLight) Color.Black else Color(0xFFF0F0F0),
+                focusedContainerColor = if (colors.isLight) Color(0xFFECECEC) else Color(0xFF2E2E2E),
+                unfocusedContainerColor = if (colors.isLight) Color(0xFFECECEC) else Color(0xFF2E2E2E),
                 focusedLabelColor = colors.secondaryText,
                 unfocusedLabelColor = colors.secondaryText,
+                focusedPlaceholderColor = colors.secondaryText,
+                unfocusedPlaceholderColor = colors.secondaryText,
                 cursorColor = colors.primary
             )
         )
@@ -934,12 +936,14 @@ private fun ScriptUrlDialog(
             textStyle = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
             shape = RoundedCornerShape(12.dp),
             colors = TextFieldDefaults.colors(
-                focusedTextColor = colors.onSurface,
-                unfocusedTextColor = colors.onSurface,
-                focusedContainerColor = colors.surfaceVariant,
-                unfocusedContainerColor = colors.surfaceVariant,
+                focusedTextColor = if (colors.isLight) Color.Black else Color(0xFFF0F0F0),
+                unfocusedTextColor = if (colors.isLight) Color.Black else Color(0xFFF0F0F0),
+                focusedContainerColor = if (colors.isLight) Color(0xFFECECEC) else Color(0xFF2E2E2E),
+                unfocusedContainerColor = if (colors.isLight) Color(0xFFECECEC) else Color(0xFF2E2E2E),
                 focusedLabelColor = colors.secondaryText,
                 unfocusedLabelColor = colors.secondaryText,
+                focusedPlaceholderColor = colors.secondaryText,
+                unfocusedPlaceholderColor = colors.secondaryText,
                 cursorColor = colors.primary
             )
         )
