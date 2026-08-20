@@ -27,10 +27,9 @@ import java.util.zip.ZipFile
 
 object UpdateChecker {
 
-    // In-app update metadata is not hosted in this fork yet, so remote checks are
-    // disabled until Update/Stable.json is added to the repository.
-    private const val STABLE_URL = ""
-    private const val BETA_URL = ""
+    private const val REPO_BASE = "https://raw.githubusercontent.com/shu64am/alextool/main/"
+    private const val STABLE_URL = REPO_BASE + "Stable.json"
+    private const val BETA_URL = REPO_BASE + "Beta.json"
 
     private const val PREFS_NAME = "update_prefs"
     private const val KEY_SKIPPED_VERSION_CODE = "skipped_version_code"
@@ -93,11 +92,6 @@ object UpdateChecker {
     }
 
     fun check(activity: Activity, isBeta: Boolean, silent: Boolean) {
-        if (STABLE_URL.isEmpty() || BETA_URL.isEmpty()) {
-            // Update metadata is not available in this fork yet.
-            if (!silent) mountFlow(activity).step = UpdateFlowStep.NoUpdate
-            return
-        }
         scopeFor(activity).launch {
             try {
                 val (json, isSelectedBeta) = withContext(Dispatchers.IO) {
