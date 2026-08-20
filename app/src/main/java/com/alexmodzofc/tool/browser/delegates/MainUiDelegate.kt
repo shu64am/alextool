@@ -1,0 +1,418 @@
+package com.alexmodzofc.tool.browser.delegates
+import com.alexmodzofc.tool.browser.*
+import com.alexmodzofc.tool.browser.suggestions.SuggestionFetcher
+import com.alexmodzofc.tool.browser.webview.loadJsAsset
+import android.content.Context
+import android.Manifest
+import android.util.TypedValue
+import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.webkit.WebViewFeature
+import com.alexmodzofc.tool.R
+import com.alexmodzofc.tool.bookmarks.Bookmark
+import com.alexmodzofc.tool.bookmarks.BookmarkManager
+import com.alexmodzofc.tool.history.HistoryItem
+import com.alexmodzofc.tool.history.SearchHistoryManager
+
+private const val SUGGESTION_HISTORY_LIMIT = 20
+private const val SUGGESTION_BOOKMARK_LIMIT = 10
+
+internal fun MainActivity.applyAddressBarPosition() {
+    val position = prefs.getString("address_bar_position", "top") ?: "top"
+    uiState.addressBarPosition = when (position) {
+        "top" -> AddressBarPosition.TOP
+        "bottom" -> AddressBarPosition.BOTTOM
+        else -> AddressBarPosition.SPLIT
+    }
+    uiState.topBarFraction = 0f
+    uiState.bottomBarFraction = 0f
+    uiState.topBarFullHeightPx = 0
+    uiState.bottomBarFullHeightPx = 0
+    updateMainContentInsets()
+}
+
+/** Sets up the shared suggestion fetcher/background thread backing [SearchOverlay]. */
+internal fun MainActivity.setupAddressBar() {
+    suggestionFetcher = SuggestionFetcher()
+    val bgThread = android.os.HandlerThread("AlexToolSuggestions").also { it.start() }
+    suggestionsBgThread = bgThread
+    suggestionsBgHandler = android.os.Handler(bgThread.looper)
+}
+
+private fun combineSuggestions(
+    bookmarks: List<Bookmark>,
+    history: List<HistoryItem>,
+    suggestions: List<String>
+): List<SuggestionItem> {
+    val seenUrls = mutableSetOf<String>()
+    val items = mutableListOf<SuggestionItem>()
+    bookmarks.forEach {
+        seenUrls.add(it.url)
+        items.add(SuggestionItem(it.url, it.title.ifBlank { it.url }, SuggestionType.BOOKMARK))
+    }
+    history.forEach {
+        if (seenUrls.add(it.query)) {
+            items.add(SuggestionItem(it.query, it.title.ifBlank { it.query }, SuggestionType.HISTORY))
+        }
+    }
+    suggestions.forEach {
+        if (seenUrls.add(it)) {
+            items.add(SuggestionItem(it, it, SuggestionType.SUGGESTION))
+        }
+    }
+    return items
+}
+
+internal fun MainActivity.openSearchOverlay(isBottom: Boolean) {
+    uiState.searchOverlayIsBottom = isBottom
+    val current = tabManager.activeTab?.webView?.url ?: ""
+    uiState.searchOverlayOpen = true
+    onSearchQueryChanged(current)
+}
+
+internal fun MainActivity.closeSearchOverlay() {
+    uiState.searchOverlayOpen = false
+    suggestionFetcher?.cancel()
+    uiState.suggestions = emptyList()
+    updateAddressBar(tabManager.activeTab?.url ?: "")
+}
+
+internal fun MainActivity.onSearchQueryChanged(query: String) {
+    uiState.searchQuery = query
+    val bgHandler = suggestionsBgHandler ?: return
+    bgHandler.removeCallbacksAndMessages(null)
+    bgHandler.post {
+        if (query.isBlank()) {
+            suggestionFetcher?.cancel()
+            val history = SearchHistoryManager.getAll(this).take(SUGGESTION_HISTORY_LIMIT)
+            val bookmarks = BookmarkManager.getAll(this).take(SUGGESTION_BOOKMARK_LIMIT)
+            runOnUiThread { uiState.suggestions = combineSuggestions(bookmarks, history, emptyList()) }
+            return@post
+        }
+        val history = SearchHistoryManager.search(this, query).take(SUGGESTION_HISTORY_LIMIT)
+        val bookmarks = BookmarkManager.search(this, query).take(SUGGESTION_BOOKMARK_LIMIT)
+        runOnUiThread { uiState.suggestions = combineSuggestions(bookmarks, history, emptyList()) }
+        suggestionFetcher?.fetch(query) { suggestions ->
+            runOnUiThread { uiState.suggestions = combineSuggestions(bookmarks, history, suggestions) }
+        }
+    }
+}
+
+internal fun MainActivity.onSuggestionHistoryDelete(query: String) {
+    val bgHandler = suggestionsBgHandler ?: return
+    bgHandler.post {
+        SearchHistoryManager.delete(this, query)
+        val currentQuery = uiState.searchQuery
+        val history = SearchHistoryManager.search(this, currentQuery).take(SUGGESTION_HISTORY_LIMIT)
+        val bookmarks = BookmarkManager.search(this, currentQuery).take(SUGGESTION_BOOKMARK_LIMIT)
+        runOnUiThread { uiState.suggestions = combineSuggestions(bookmarks, history, emptyList()) }
+    }
+}
+
+internal fun MainActivity.onSearchSubmitted(input: String) {
+    val trimmed = input.trim()
+    if (trimmed.isEmpty()) return
+    val formatted = formatUrl(trimmed)
+    setAddressBarText(formatted, isBottom = uiState.searchOverlayIsBottom)
+    uiState.searchOverlayOpen = false
+    suggestionFetcher?.cancel()
+    uiState.suggestions = emptyList()
+    if (tabManager.activeTab?.isIncognito != true) {
+        Thread { SearchHistoryManager.add(this, trimmed) }.start()
+    }
+    loadUrl(trimmed)
+}
+
+internal fun MainActivity.onSuggestionChosen(query: String) {
+    val formatted = formatUrl(query)
+    setAddressBarText(formatted, isBottom = uiState.searchOverlayIsBottom)
+    uiState.searchOverlayOpen = false
+    suggestionFetcher?.cancel()
+    uiState.suggestions = emptyList()
+    if (tabManager.activeTab?.isIncognito != true) {
+        SearchHistoryManager.add(this, query)
+    }
+    loadUrl(query)
+}
+
+private fun MainActivity.setAddressBarText(formatted: String, isBottom: Boolean) {
+    val secure = formatted.startsWith("https://")
+    if (isBottom) {
+        uiState.addressBarTextBottom = formatted
+        uiState.addressBarSecureBottom = secure
+    } else {
+        uiState.addressBarTextTop = formatted
+        uiState.addressBarSecureTop = secure
+    }
+}
+
+internal fun MainActivity.navGoBack() { tabManager.activeTab?.webView?.let { if (it.canGoBack()) it.goBack() } }
+internal fun MainActivity.navGoForward() { tabManager.activeTab?.webView?.let { if (it.canGoForward()) it.goForward() } }
+internal fun MainActivity.navGoHome() { loadUrl(getSearchEngineHomeUrl()) }
+internal fun MainActivity.navRefreshOrStop() {
+    tabManager.activeTab?.webView?.let { wv ->
+        if (uiState.isPageLoading) { wv.stopLoading(); onPageFinished(wv.url ?: "") } else { wv.reload() }
+    }
+}
+internal fun MainActivity.navToggleBookmark() {
+    val url = tabManager.activeTab?.webView?.url ?: return
+    val title = tabManager.activeTab?.title ?: url
+    if (BookmarkManager.isBookmarked(this, url)) {
+        BookmarkManager.remove(this, url)
+    } else {
+        BookmarkManager.add(this, Bookmark(url = url, title = title))
+    }
+    updateBookmarkIcon()
+}
+
+internal fun MainActivity.loadUrl(input: String) {
+    val url = formatUrl(input)
+    val wv = tabManager.activeTab?.webView ?: return
+
+    // AlexTool Tooling deep links — mirror the reference toolkit's navigateTo():
+    // decode the wrapped target from a alextrick URL and load the decoded
+    // target directly so the synthetic /links path is never requested from
+    // the upstream server (prevents the upstream 404 page).
+    val toolingTarget = runCatching { com.alexmodzofc.tool.extratooling.ExtraToolingManager.decodeToolingTarget(url) }.getOrNull()
+    if (toolingTarget != null) {
+        tabManager.activeTab?.url = toolingTarget
+        val referer = runCatching {
+            val u = android.net.Uri.parse(url)
+            u.scheme + "://" + (u.host ?: "") + "/"
+        }.getOrNull() ?: ""
+        val headers = buildDesktopHeaders()?.toMutableMap() ?: mutableMapOf()
+        if (referer.isNotEmpty()) { headers["Referer"] = referer; headers["Origin"] = referer }
+        updateAddressBar(toolingTarget)
+        wv.loadUrl(toolingTarget, headers)
+        hideKeyboardOnly()
+        return
+    }
+
+    tabManager.activeTab?.url = url
+    val headers = buildDesktopHeaders()
+    if (headers != null) wv.loadUrl(url, headers) else wv.loadUrl(url)
+    hideKeyboardOnly()
+}
+
+internal fun MainActivity.formatUrl(input: String): String {
+    val t = input.trim()
+    return when {
+        t.startsWith("http://") || t.startsWith("https://") -> t
+        t.contains(".") && !t.contains(" ") -> {
+            val host = t.substringBefore("/").substringBefore(":")
+            val isIpAddress = host.matches(Regex("""^(\d{1,3}\.){3}\d{1,3}$"""))
+            if (isIpAddress) "http://$t" else "https://$t"
+        }
+        else -> getSearchQueryUrl(t)
+    }
+}
+
+internal fun MainActivity.updateAddressBar(url: String) {
+    if (uiState.searchOverlayOpen) return
+    val secure = url.startsWith("https://")
+    uiState.addressBarTextTop = url
+    uiState.addressBarSecureTop = secure
+    uiState.addressBarTextBottom = url
+    uiState.addressBarSecureBottom = secure
+}
+
+internal fun MainActivity.onTabUrlUpdated(webView: android.webkit.WebView, url: String) {
+    tabManager.tabs.find { it.webView === webView }?.url = url
+    if (tabManager.activeTab?.webView === webView && !uiState.searchOverlayOpen) {
+        updateAddressBar(url)
+    }
+}
+
+internal fun MainActivity.onPageStarted(url: String) {
+    swipeRefreshView.isRefreshing = false
+    updateAddressBar(url)
+    uiState.isPageLoading = true
+    uiState.pageLoadProgress = 0
+    updateNavigationState()
+    if (hasWebBottomNav) {
+        hasWebBottomNav = false
+        animateBottomBarTo(0f, animated = true)
+    }
+
+    tabManager.activeTab?.let { tab ->
+        onQuiverGuardPageStarted(tab, url)
+    }
+
+    if (url.startsWith("http")) {
+        if (url == autoDesktopPendingReload) {
+            autoDesktopPendingReload = null
+        } else {
+            val host = runCatching { android.net.Uri.parse(url).host }.getOrNull()
+            if (host != null) {
+                val shouldSaveState = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+                    .getString(
+                        com.alexmodzofc.tool.settings.desktopmode.DesktopModeActivity.PREF_DESKTOP_MODE_SAVE_STATE,
+                        com.alexmodzofc.tool.settings.desktopmode.DesktopModeActivity.VALUE_SAVE_STATE
+                    ) == com.alexmodzofc.tool.settings.desktopmode.DesktopModeActivity.VALUE_SAVE_STATE
+
+                val isSaved = shouldSaveState && com.alexmodzofc.tool.settings.sitepermissions.SitePermissionManager
+                    .getState(this, host, com.alexmodzofc.tool.settings.sitepermissions.SitePermissionDatabase.TYPE_DESKTOP_MODE) != null
+
+                val hostDomain = registeredDomain(host)
+                val lockedDomain = desktopModeHost?.let { registeredDomain(it) }
+
+                when {
+                    isSaved && !isDesktopMode -> {
+                        isDesktopMode = true
+                        desktopModeHost = host
+                        tabManager.tabs.forEach { tab ->
+                            tab.webView.settings.userAgentString = buildUserAgent()
+                            applyUserAgentMetadata(tab.webView)
+                            addDesktopScript(tab)
+                        }
+                        tabManager.activeTab?.webView?.let { wv ->
+                            val headers = buildDesktopHeaders()
+                            if (headers != null) {
+                                autoDesktopPendingReload = url
+                                wv.loadUrl(url, headers)
+                            }
+                        }
+                    }
+                    isSaved && isDesktopMode && host != desktopModeHost -> {
+                        desktopModeHost = host
+                    }
+                    !isSaved && isDesktopMode && host != desktopModeHost -> {
+                        if (hostDomain == lockedDomain || !shouldSaveState) {
+                            desktopModeHost = host
+                        } else {
+                            isDesktopMode = false
+                            desktopModeHost = null
+                            tabManager.tabs.forEach { tab ->
+                                tab.webView.settings.userAgentString = buildUserAgent()
+                                applyUserAgentMetadata(tab.webView)
+                                removeDesktopScript(tab)
+                            }
+                            tabManager.activeTab?.webView?.reload()
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+internal fun MainActivity.onPageFinished(url: String) {
+    swipeRefreshView.isRefreshing = false
+    updateAddressBar(url)
+    uiState.isPageLoading = false
+    updateNavigationState()
+    tabManager.activeTab?.webView?.let { wv ->
+        injectScrollTracker(wv)
+        injectBottomNavDetector(wv)
+        injectCanvasTouchDetector(wv)
+        wv.evaluateJavascript(loadJsAsset("link_touch_tracker.js"), null)
+        val theme = prefs.getString("app_theme", "dark") ?: "dark"
+        val darkWeb = when (theme) { "dark" -> true; "light" -> false; else -> prefs.getBoolean("force_dark_web", false) }
+        if (darkWeb
+            && !WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)
+            && !WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)
+        ) {
+            wv.evaluateJavascript(loadJsAsset("dark_mode.js"), null)
+        }
+    }
+    nestedScrollActive = false
+    canvasTouchActive = false
+    updateBookmarkIcon()
+
+    tabManager.activeTab?.let { tab ->
+        onQuiverGuardPageFinished(tab, url)
+    }
+
+    val activeTab = tabManager.activeTab
+    if (activeTab?.isIncognito != true && url.startsWith("http") && !SearchHistoryManager.isSearchEngineUrl(url)) {
+        val title = activeTab?.webView?.title ?: ""
+        Thread {
+            SearchHistoryManager.add(applicationContext, url, title)
+            if (com.alexmodzofc.tool.bookmarks.BookmarkManager.isBookmarked(applicationContext, url)) {
+                com.alexmodzofc.tool.bookmarks.BookmarkManager.updateLastVisit(applicationContext, url)
+            }
+        }.start()
+    }
+}
+
+internal fun MainActivity.onProgressChanged(progress: Int) {
+    uiState.pageLoadProgress = progress
+    uiState.isPageLoading = progress < 100
+}
+
+internal fun MainActivity.resetProgressBar() {
+    uiState.pageLoadProgress = 0
+    uiState.isPageLoading = false
+}
+
+internal fun MainActivity.updateBookmarkIcon() {
+    val url = tabManager.activeTab?.webView?.url ?: ""
+    uiState.hasActiveUrl = url.isNotEmpty()
+    uiState.isBookmarked = url.isNotEmpty() && BookmarkManager.isBookmarked(this, url)
+}
+
+internal fun MainActivity.updateNavigationState() {
+    val wv = tabManager.activeTab?.webView
+    uiState.canGoBack = wv?.canGoBack() == true
+    uiState.canGoForward = wv?.canGoForward() == true
+}
+
+internal fun MainActivity.updateTabCount() {
+    val count = tabManager.count
+    uiState.tabCountText = if (count > 99) ":D" else count.toString()
+}
+
+internal fun MainActivity.updateIncognitoState(isIncognito: Boolean) {
+    // The toolbars are plain Compose Surfaces colored from LocalAlexToolColors.surface, so unlike
+    // the old Views there's no separate "reapply the surface color" step needed here — this
+    // just flips the incognito icon/badge.
+    uiState.isIncognito = isIncognito
+}
+
+internal fun MainActivity.updateSwipeRefreshColors(isIncognito: Boolean) {
+    swipeRefreshView.setProgressBackgroundColorSchemeColor(
+        getThemeColor(com.google.android.material.R.attr.colorSurface)
+    )
+    swipeRefreshView.setColorSchemeColors(getThemeColor(androidx.appcompat.R.attr.colorPrimary))
+}
+
+/** Closes the search overlay (if open) and drops focus/IME, without touching the address bar text. */
+private fun MainActivity.hideKeyboardOnly() {
+    if (uiState.searchOverlayOpen) closeSearchOverlay()
+    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+    imm.hideSoftInputFromWindow(window.decorView.windowToken, 0)
+}
+
+internal fun MainActivity.getThemeColor(attrId: Int): Int {
+    val typedValue = TypedValue()
+    theme.resolveAttribute(attrId, typedValue, true)
+    return typedValue.data
+}
+
+internal fun MainActivity.handleVoiceSearchTap() {
+    if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+        == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+        launchVoiceSearch()
+    } else {
+        uiState.confirmDialogConfig = com.alexmodzofc.tool.ui.listscreen.ConfirmDialogConfig(
+            title = getString(R.string.voice_search_permission_title),
+            message = getString(R.string.voice_search_permission_message),
+            positiveLabel = getString(android.R.string.ok),
+            onPositive = { microphonePermissionLauncher.launch(Manifest.permission.RECORD_AUDIO) },
+            negativeLabel = getString(android.R.string.cancel)
+        )
+    }
+}
+
+private fun registeredDomain(host: String): String =
+    com.alexmodzofc.tool.util.registeredDomain(host)
+
+internal fun MainActivity.launchVoiceSearch() {
+    val intent = android.content.Intent(android.speech.RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+        putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+            android.speech.RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH)
+    }
+    runCatching { voiceSearchLauncher.launch(intent) }.onFailure {
+        Toast.makeText(this, getString(R.string.voice_search_not_available), Toast.LENGTH_SHORT).show()
+    }
+}

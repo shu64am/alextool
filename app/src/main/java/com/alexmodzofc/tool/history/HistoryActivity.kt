@@ -1,0 +1,147 @@
+package com.alexmodzofc.tool.history
+
+import com.alexmodzofc.tool.R
+
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.addCallback
+import androidx.activity.compose.setContent
+import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
+import androidx.preference.PreferenceManager
+import com.alexmodzofc.tool.base.AlexToolActivity
+import com.alexmodzofc.tool.ui.listscreen.ConfirmDialogConfig
+import com.alexmodzofc.tool.ui.listscreen.ConfirmDialogHost
+import com.alexmodzofc.tool.ui.rememberMaxContentWidth
+import com.alexmodzofc.tool.ui.theme.AlexToolComposeTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+/**
+ * Hosts the Compose [HistoryScreen]. All persistence (SQLite reads/writes via
+ * [SearchHistoryManager]) stays off the main thread via [lifecycleScope] coroutines; this
+ * activity's job is just wiring that data and the "open item" / "delete selected" /
+ * "clear all" actions into [uiState], which the screen renders reactively.
+ *
+ * The content column adapts to the window: [maxContentWidth] constrains and centers the list
+ * once the window is wider than a phone (tablet, unfolded foldable, split-screen, desktop
+ * freeform window), while the toolbar and delete FAB stay full-bleed at the true window edges.
+ */
+class HistoryActivity : AlexToolActivity() {
+
+    private lateinit var uiState: HistoryUiState
+    private lateinit var prefs: android.content.SharedPreferences
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        onBackPressedDispatcher.addCallback(this) {
+            when {
+                uiState.isSearchMode -> { uiState.isSearchMode = false; uiState.searchQuery = "" }
+                uiState.isInSelectionMode -> uiState.exitSelectionMode()
+                else -> { isEnabled = false; onBackPressedDispatcher.onBackPressed() }
+            }
+        }
+
+        uiState = HistoryUiState()
+        prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        val theme = prefs.getString("app_theme", "dark") ?: "dark"
+        val hideStatusBar = prefs.getBoolean("hide_status_bar", false)
+
+        loadHistory()
+
+        setContent {
+            AlexToolComposeTheme(theme = theme) {
+                val maxContentWidth = rememberMaxContentWidth(this)
+
+                HistoryScreen(
+                    state = uiState,
+                    maxContentWidth = maxContentWidth,
+                    onExit = { finish() },
+                    onOpenItem = { item -> openHistoryItem(item) },
+                    onDeleteSelectedClick = { showDeleteConfirm() },
+                    onClearAllClick = { showClearAllConfirm() }
+                )
+
+                ConfirmDialogHost(uiState.deleteConfirm, hideStatusBar) { uiState.deleteConfirm = null }
+                ConfirmDialogHost(uiState.clearAllConfirm, hideStatusBar) { uiState.clearAllConfirm = null }
+            }
+        }
+    }
+
+    private fun loadHistory() {
+        lifecycleScope.launch {
+            val items = withContext(Dispatchers.IO) { SearchHistoryManager.getAll(this@HistoryActivity) }
+            uiState.items = items
+            uiState.isLoading = false
+        }
+    }
+
+    /** Search-history rows can be either a visited URL or a raw search query; a query has to
+     *  be routed through the user's chosen search engine before it can be opened, matching
+     *  how the omnibox itself resolves plain-text input. */
+    private fun openHistoryItem(item: HistoryItem) {
+        val url = if (item.query.startsWith("http")) {
+            item.query
+        } else {
+            val encoded = Uri.encode(item.query)
+            when (prefs.getString("search_engine", "google")) {
+                "brave" -> "https://search.brave.com/search?q=$encoded"
+                "google" -> "https://www.google.com/search?q=$encoded"
+                else -> "https://duckduckgo.com/?q=$encoded"
+            }
+        }
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        intent.setPackage(packageName)
+        startActivity(intent)
+        finish()
+    }
+
+    private fun showDeleteConfirm() {
+        val count = uiState.selectedCount
+        if (count == 0) return
+        uiState.deleteConfirm = ConfirmDialogConfig(
+            title = getString(R.string.history_delete_confirm_title),
+            message = getString(R.string.history_delete_confirm_message, count),
+            negativeLabel = getString(R.string.action_cancel),
+            positiveLabel = getString(R.string.history_delete_selected),
+            onPositive = { deleteSelected() }
+        )
+    }
+
+    private fun deleteSelected() {
+        val toDelete = uiState.selectedKeys
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                for (query in toDelete) SearchHistoryManager.delete(this@HistoryActivity, query)
+            }
+            uiState.items = uiState.items.filterNot { it.query in toDelete }
+            uiState.exitSelectionMode()
+            Toast.makeText(this@HistoryActivity, getString(R.string.history_items_deleted), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showClearAllConfirm() {
+        if (uiState.items.isEmpty()) return
+        uiState.clearAllConfirm = ConfirmDialogConfig(
+            title = getString(R.string.history_clear_all),
+            message = getString(R.string.history_clear_all_confirm_message),
+            negativeLabel = getString(R.string.action_cancel),
+            positiveLabel = getString(R.string.history_clear_all),
+            onPositive = { clearAllHistory() }
+        )
+    }
+
+    private fun clearAllHistory() {
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) { SearchHistoryManager.clear(this@HistoryActivity) }
+            uiState.items = emptyList()
+            uiState.exitSelectionMode()
+            Toast.makeText(this@HistoryActivity, getString(R.string.history_all_cleared), Toast.LENGTH_SHORT).show()
+        }
+    }
+}

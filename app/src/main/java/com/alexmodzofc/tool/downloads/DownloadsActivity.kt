@@ -1,0 +1,531 @@
+package com.alexmodzofc.tool.downloads
+
+import com.alexmodzofc.tool.R
+
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import android.provider.Settings
+import android.webkit.MimeTypeMap
+import android.widget.Toast
+import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.core.content.FileProvider
+import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
+import androidx.preference.PreferenceManager
+import com.alexmodzofc.tool.base.AlexToolActivity
+import com.alexmodzofc.tool.ui.AlexToolSnackbarHost
+import com.alexmodzofc.tool.ui.OverlayHostActivity
+import com.alexmodzofc.tool.ui.SnackbarHostActivity
+import com.alexmodzofc.tool.ui.rememberMaxContentWidth
+import com.alexmodzofc.tool.ui.showAlexToolSnackbar
+import com.alexmodzofc.tool.ui.theme.AlexToolComposeTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+/**
+ * Hosts the Compose [DownloadsScreen]. See [com.alexmodzofc.tool.history.HistoryActivity] for the
+ * general hosting pattern.
+ *
+ * Everything item-scoped (open/share/properties/APK-install/redownload/change-settings/etc.) is
+ * preserved unchanged below, since none of it ever depended on the old per-tab Fragment/
+ * ViewPager2 architecture this rewrite removes — it always operated on a single [DownloadItem]
+ * (or an explicit list of them) passed in directly. Only the toolbar, tab filtering, sort/
+ * search/selection state, and bulk-delete flow were coupled to that architecture and needed
+ * rewriting.
+ */
+class DownloadsActivity : AlexToolActivity(), OverlayHostActivity, SnackbarHostActivity {
+
+    /** Full-window Compose overlay (e.g. the redownload dialog) rendered inline in this
+     *  activity's own composition; see [OverlayHostActivity]. */
+    override var overlayContent by mutableStateOf<(@Composable () -> Unit)?>(null)
+
+    /** Backs the "downloading started" Snackbar; see [SnackbarHostActivity]. */
+    override val snackbarHostState = SnackbarHostState()
+
+    companion object {
+        const val EXTRA_OPEN_ID = "open_download_id"
+
+        /** Opens (or, if already the foreground Activity, refocuses) the downloads screen. Used
+         *  by the "downloading started" Snackbar's View action, wherever it's shown from. */
+        fun open(context: android.content.Context) {
+            context.startActivity(
+                Intent(context, DownloadsActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                }
+            )
+        }
+    }
+
+    internal lateinit var uiState: DownloadsUiState
+
+    /** No-op shims: multiRedownload/multiRemove below reset this and call refresh() to force an
+     *  immediate re-render after their own action, matching the pre-Compose throttled-polling
+     *  design. Compose already re-renders reactively from AlexToolDownloadManager.downloadsFlow on
+     *  every emission, so there's nothing left for these to actually do. */
+    internal var lastRefreshMs = 0L
+    internal fun refresh() {}
+
+    internal var manualFolderPickerCallback: ((Uri) -> Unit)? = null
+    internal val manualFolderPickerLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == android.app.Activity.RESULT_OK) {
+            val uri = result.data?.data ?: return@registerForActivityResult
+            manualFolderPickerCallback?.invoke(uri)
+        }
+        manualFolderPickerCallback = null
+    }
+
+    private var pendingApkItem: DownloadItem? = null
+    private val installPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        val item = pendingApkItem ?: return@registerForActivityResult
+        pendingApkItem = null
+        if (packageManager.canRequestPackageInstalls()) launchApkInstall(item)
+    }
+
+    fun launchManualFolderPicker(onPicked: (Uri) -> Unit) {
+        manualFolderPickerCallback = { uri ->
+            contentResolver.takePersistableUriPermission(
+                uri,
+                Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            )
+            onPicked(uri)
+        }
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
+            addFlags(
+                Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION or
+                    Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+            )
+        }
+        manualFolderPickerLauncher.launch(intent)
+    }
+
+    private fun submitManualDownload(submission: ManualDownloadSubmission, onDismiss: () -> Unit, onRename: () -> Unit) {
+        val ua = android.webkit.WebSettings.getDefaultUserAgent(this)
+        performManualDownload(
+            url = submission.url,
+            filename = submission.filename,
+            userAgent = ua,
+            retryEnabled = submission.retryEnabled,
+            unmeteredOnly = submission.unmeteredOnly,
+            splitParts = submission.splitParts,
+            multithreadingParts = submission.multithreadingParts,
+            speedLimitBytesPerSec = submission.speedLimitBytesPerSec,
+            locationMode = submission.locationMode,
+            customLocationUri = submission.customLocationUri,
+            scheduledStartAtMillis = submission.scheduledStartAtMillis,
+            onDismiss = {
+                showAlexToolSnackbar(
+                    message = getString(R.string.toast_downloading, submission.filename),
+                    actionLabel = getString(R.string.download_started_view_action),
+                    onAction = { DownloadsActivity.open(this) }
+                )
+                onDismiss()
+            },
+            onRename = onRename
+        )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        handleOpenIntent(intent)
+
+        uiState = DownloadsUiState()
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        val theme = prefs.getString("app_theme", "dark") ?: "dark"
+        val hideStatusBar = prefs.getBoolean("hide_status_bar", false)
+
+        setContent {
+            AlexToolComposeTheme(theme = theme) {
+                val maxContentWidth = rememberMaxContentWidth(this)
+                val allItems by AlexToolDownloadManager.downloadsFlow.collectAsState()
+
+                // Active downloads show elapsed time and speed/ETA text computed from
+                // System.currentTimeMillis() at render time, not stored reactively in the Flow's
+                // value — so this ticks recomposition once a second to keep that text current
+                // even when the Flow itself hasn't emitted a new list.
+                var tick by remember { mutableStateOf(0L) }
+                LaunchedEffect(Unit) {
+                    while (true) {
+                        delay(1000)
+                        tick++
+                    }
+                }
+
+                Box {
+                    DownloadsScreen(
+                        state = uiState,
+                        allItems = allItems,
+                        tick = tick,
+                        maxContentWidth = maxContentWidth,
+                        hideStatusBar = hideStatusBar,
+                        onExit = { finish() },
+                        onOpenItem = { item -> handleOpenItem(item) },
+                        onDownloadSettingsClick = {
+                            startActivity(Intent(this@DownloadsActivity, com.alexmodzofc.tool.settings.SettingsActivity::class.java)
+                                .putExtra(com.alexmodzofc.tool.settings.SettingsActivity.EXTRA_OPEN_FRAGMENT, "download_settings"))
+                        },
+                        onPause = { id -> AlexToolDownloadManager.pause(this@DownloadsActivity, id) },
+                        onResume = { id -> AlexToolDownloadManager.resume(this@DownloadsActivity, id) },
+                        onRetry = { id -> AlexToolDownloadManager.retryFailed(this@DownloadsActivity, id) },
+                        itemActions = DownloadItemActions(
+                            onOpen = { item -> handleOpenItem(item) },
+                            onShare = { item -> shareFile(item) },
+                            onOpenFolder = { item -> openFolder(item) },
+                            onRedownload = { item -> redownload(item) },
+                            onRedownloadOptions = { item -> showRedownloadDialog(item) },
+                            onChangeSettings = { item -> uiState.changeSettingsItem = item },
+                            onUpdateLink = { item -> uiState.updateLinkItem = item },
+                            onUpdateLinkInBrowser = { item -> openBrowserForRefreshLink(item) },
+                            onRemove = { item -> uiState.deleteConfirmItems = listOf(item) },
+                            onCopyLink = { item -> copyDownloadLink(item) },
+                            onCopyFilename = { item -> copyFileName(item) },
+                            onCopyPath = { item -> copyFilePath(item) },
+                            onProperties = { item -> uiState.propertiesItem = item }
+                        ),
+                        onAddClick = { uiState.manualDownloadDialogOpen = true },
+                        onDeleteSelectedClick = { items -> uiState.deleteConfirmItems = items },
+                        onDeleteConfirmed = { items, deleteFromStorage -> executeDelete(items, deleteFromStorage) },
+                        onMultiRedownload = { items -> multiRedownload(items); uiState.exitSelectionMode() },
+                        onMultiCopyLink = { items -> multiCopyToClipboard(items.joinToString("\n") { it.url }, getString(R.string.download_menu_link_copied)) },
+                        onMultiCopyFilename = { items -> multiCopyToClipboard(items.joinToString("\n") { it.filename }, getString(R.string.download_menu_filename_copied)) },
+                        onMultiCopyPath = { items -> multiCopyToClipboard(items.joinToString("\n") { pathFor(it) }, getString(R.string.download_menu_path_copied)) },
+                        onSubmitManualDownload = { submission, onDismiss, onRename -> submitManualDownload(submission, onDismiss, onRename) }
+                    )
+                    com.alexmodzofc.tool.ui.listscreen.ConfirmDialogHost(uiState.confirmDialogConfig, hideStatusBar) { uiState.confirmDialogConfig = null }
+                    uiState.conflictDialogRequest?.let { req ->
+                        DownloadConflictDialog(req, hideStatusBar) { uiState.conflictDialogRequest = null }
+                    }
+                    overlayContent?.invoke()
+                    AlexToolSnackbarHost(hostState = snackbarHostState)
+                }
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleOpenIntent(intent)
+    }
+
+    private fun pathFor(item: DownloadItem): String = when {
+        item.file != null -> item.file!!.absolutePath
+        item.contentUri != null -> {
+            val uri = Uri.parse(item.contentUri)
+            val seg = uri.lastPathSegment ?: item.contentUri!!
+            when {
+                seg.startsWith("primary:") -> "/storage/emulated/0/${seg.removePrefix("primary:")}"
+                seg.contains(":") -> { val p = seg.split(":", limit = 2); "/storage/${p[0]}/${p[1]}" }
+                else -> item.contentUri!!
+            }
+        }
+        else -> item.filename
+    }
+
+    private fun executeDelete(toRemove: List<DownloadItem>, deleteFromStorage: Boolean) {
+        val count = toRemove.size
+        if (count == 0) return
+        uiState.deleteProgress = DeleteProgress(0, count)
+        lifecycleScope.launch {
+            withContext(Dispatchers.Default) {
+                toRemove.forEachIndexed { index, item ->
+                    AlexToolDownloadManager.remove(this@DownloadsActivity, item.id, deleteFromStorage)
+                    val done = index + 1
+                    withContext(Dispatchers.Main) { uiState.deleteProgress = DeleteProgress(done, count) }
+                }
+            }
+            uiState.deleteProgress = null
+            uiState.exitSelectionMode()
+            Toast.makeText(this@DownloadsActivity, getString(R.string.downloads_items_removed), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun handleOpenIntent(intent: Intent?) {
+        val id = intent?.getIntExtra(EXTRA_OPEN_ID, -1) ?: return
+        if (id == -1) return
+        val item = AlexToolDownloadManager.downloadsFlow.value.find { it.id == id } ?: return
+        handleOpenItem(item)
+    }
+
+    internal fun handleOpenItem(item: DownloadItem) {
+        if (item.status != DownloadStatus.COMPLETE) return
+        val ext = when {
+            item.file != null -> item.file!!.extension.lowercase()
+            item.contentUri != null -> item.filename.substringAfterLast('.').lowercase()
+            else -> return
+        }
+        if (ext == "apk") handleApkOpen(item) else openFile(item)
+    }
+
+    private fun handleApkOpen(item: DownloadItem) {
+        uiState.confirmDialogConfig = com.alexmodzofc.tool.ui.listscreen.ConfirmDialogConfig(
+            title = getString(R.string.install_apk_dialog_title),
+            message = getString(R.string.install_apk_dialog_message, item.filename),
+            positiveLabel = getString(R.string.install_apk_dialog_confirm),
+            onPositive = {
+                if (packageManager.canRequestPackageInstalls()) launchApkInstall(item)
+                else showInstallPermissionDialog(item)
+            },
+            negativeLabel = getString(R.string.action_cancel)
+        )
+    }
+
+    private fun showInstallPermissionDialog(item: DownloadItem) {
+        uiState.confirmDialogConfig = com.alexmodzofc.tool.ui.listscreen.ConfirmDialogConfig(
+            title = getString(R.string.install_apk_permission_title),
+            message = getString(R.string.install_apk_permission_message),
+            positiveLabel = getString(R.string.action_open_settings),
+            onPositive = {
+                pendingApkItem = item
+                installPermissionLauncher.launch(
+                    Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:$packageName"))
+                )
+            },
+            negativeLabel = getString(R.string.action_cancel)
+        )
+    }
+
+    private fun launchApkInstall(item: DownloadItem) {
+        val uri = when {
+            item.file != null -> FileProvider.getUriForFile(this, "$packageName.fileprovider", item.file!!)
+            item.contentUri != null -> Uri.parse(item.contentUri)
+            else -> return
+        }
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(uri, "application/vnd.android.package-archive")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            })
+        } catch (_: Exception) {}
+    }
+
+    private fun multiRedownload(items: List<DownloadItem>) {
+        uiState.confirmDialogConfig = com.alexmodzofc.tool.ui.listscreen.ConfirmDialogConfig(
+            title = getString(R.string.redownload_multi_confirm_title, items.size),
+            message = getString(R.string.redownload_multi_confirm_message),
+            positiveLabel = getString(R.string.redownload_confirm_action),
+            onPositive = {
+                items.forEach { item ->
+                    AlexToolDownloadManager.remove(this, item.id, true)
+                    AlexToolDownloadManager.enqueue(
+                        this, item.url, item.filename, item.userAgent,
+                        item.referer, item.cookies,
+                        retryEnabled = item.retryEnabled,
+                        unmeteredOnly = item.unmeteredOnly,
+                        splitParts = item.splitParts,
+                        multithreadingParts = item.multithreadingParts,
+                        speedLimitBytesPerSec = item.speedLimitBytesPerSec,
+                        locationMode = item.locationMode,
+                        customLocationUri = item.customLocationUri
+                    )
+                }
+                lastRefreshMs = 0L
+                uiState.exitSelectionMode()
+            },
+            negativeLabel = getString(R.string.action_cancel)
+        )
+    }
+
+    private fun multiCopyToClipboard(text: String, toastMessage: String) {
+        val clipboard = getSystemService(android.content.ClipboardManager::class.java)
+        clipboard.setPrimaryClip(android.content.ClipData.newPlainText("", text))
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.TIRAMISU) {
+            Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun shareFile(item: DownloadItem) {
+        val uri = when {
+            item.file != null -> FileProvider.getUriForFile(this, "$packageName.fileprovider", item.file!!)
+            item.contentUri != null -> Uri.parse(item.contentUri)
+            else -> return
+        }
+        val ext = item.filename.substringAfterLast('.').lowercase()
+        val mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext) ?: "*/*"
+        try {
+            startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
+                type = mime
+                putExtra(Intent.EXTRA_STREAM, uri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }, item.filename))
+        } catch (_: Exception) {}
+    }
+
+    private fun openFolder(item: DownloadItem) {
+        when {
+            item.file != null -> {
+                val parent = item.file!!.parentFile ?: return
+                val standardDownloads = android.os.Environment
+                    .getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS)
+                val isStandardDownloads = try {
+                    parent.canonicalPath == standardDownloads.canonicalPath
+                } catch (_: Exception) { false }
+
+                if (isStandardDownloads) {
+                    try {
+                        startActivity(Intent(android.app.DownloadManager.ACTION_VIEW_DOWNLOADS))
+                        return
+                    } catch (_: Exception) {}
+                }
+
+                val externalRoot = android.os.Environment.getExternalStorageDirectory().absolutePath
+                val relative = parent.absolutePath.removePrefix(externalRoot).trimStart('/')
+                val docUri = Uri.parse(
+                    "content://com.android.externalstorage.documents/document/primary:" +
+                        Uri.encode(relative, "/")
+                )
+                try {
+                    startActivity(Intent(Intent.ACTION_VIEW).apply {
+                        setDataAndType(docUri, "vnd.android.document/directory")
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    })
+                } catch (_: Exception) {
+                    try {
+                        startActivity(Intent(android.app.DownloadManager.ACTION_VIEW_DOWNLOADS))
+                    } catch (_: Exception) {
+                        showOpenFolderError(parent.absolutePath)
+                    }
+                }
+            }
+            item.contentUri != null -> {
+                val treeUri = Uri.parse(item.contentUri)
+                try {
+                    val docUri = android.provider.DocumentsContract.buildDocumentUriUsingTree(
+                        treeUri,
+                        android.provider.DocumentsContract.getTreeDocumentId(treeUri)
+                    )
+                    startActivity(Intent(Intent.ACTION_VIEW).apply {
+                        setDataAndType(docUri, "vnd.android.document/directory")
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    })
+                } catch (_: Exception) {
+                    try {
+                        startActivity(Intent(android.app.DownloadManager.ACTION_VIEW_DOWNLOADS))
+                    } catch (_: Exception) {
+                        showOpenFolderError(treeUri.path ?: treeUri.toString())
+                    }
+                }
+            }
+            else -> return
+        }
+    }
+
+    private fun showOpenFolderError(path: String) {
+        uiState.confirmDialogConfig = com.alexmodzofc.tool.ui.listscreen.ConfirmDialogConfig(
+            title = getString(R.string.open_folder_error_title),
+            message = getString(R.string.open_folder_error_message, path),
+            positiveLabel = getString(R.string.action_ok)
+        )
+    }
+
+    private fun redownload(item: DownloadItem) {
+        uiState.confirmDialogConfig = com.alexmodzofc.tool.ui.listscreen.ConfirmDialogConfig(
+            title = getString(R.string.redownload_confirm_title),
+            message = getString(R.string.redownload_confirm_message),
+            positiveLabel = getString(R.string.redownload_confirm_action),
+            onPositive = {
+                AlexToolDownloadManager.remove(this, item.id, true)
+                lastRefreshMs = 0L
+                AlexToolDownloadManager.enqueue(
+                    this, item.url, item.filename, item.userAgent,
+                    item.referer, item.cookies,
+                    retryEnabled = item.retryEnabled,
+                    unmeteredOnly = item.unmeteredOnly,
+                    splitParts = item.splitParts,
+                    multithreadingParts = item.multithreadingParts,
+                    speedLimitBytesPerSec = item.speedLimitBytesPerSec,
+                    locationMode = item.locationMode,
+                    customLocationUri = item.customLocationUri
+                )
+            },
+            negativeLabel = getString(R.string.action_cancel)
+        )
+    }
+
+    private fun copyDownloadLink(item: DownloadItem) {
+        val clipboard = getSystemService(android.content.ClipboardManager::class.java)
+        clipboard.setPrimaryClip(android.content.ClipData.newPlainText(getString(R.string.download_dialog_link_clip_label), item.url))
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.TIRAMISU) {
+            Toast.makeText(this, getString(R.string.download_menu_link_copied), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun copyFileName(item: DownloadItem) {
+        val clipboard = getSystemService(android.content.ClipboardManager::class.java)
+        clipboard.setPrimaryClip(android.content.ClipData.newPlainText(getString(R.string.download_menu_copy_filename), item.filename))
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.TIRAMISU) {
+            Toast.makeText(this, getString(R.string.download_menu_filename_copied), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun copyFilePath(item: DownloadItem) {
+        val path = when {
+            item.file != null -> item.file!!.absolutePath
+            item.contentUri != null -> {
+                val uri = Uri.parse(item.contentUri)
+                val segment = uri.lastPathSegment ?: item.contentUri!!
+                when {
+                    segment.startsWith("primary:") -> "/storage/emulated/0/${segment.removePrefix("primary:")}"
+                    segment.contains(":") -> {
+                        val parts = segment.split(":", limit = 2)
+                        "/storage/${parts[0]}/${parts[1]}"
+                    }
+                    else -> item.contentUri!!
+                }
+            }
+            else -> return
+        }
+        val clipboard = getSystemService(android.content.ClipboardManager::class.java)
+        clipboard.setPrimaryClip(android.content.ClipData.newPlainText(getString(R.string.download_menu_copy_path), path))
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.TIRAMISU) {
+            Toast.makeText(this, getString(R.string.download_menu_path_copied), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun openFile(item: DownloadItem) {
+        val ext = item.filename.substringAfterLast('.').lowercase()
+        val mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext) ?: "*/*"
+        val uri = when {
+            item.file != null -> FileProvider.getUriForFile(this, "$packageName.fileprovider", item.file!!)
+            item.contentUri != null -> Uri.parse(item.contentUri)
+            else -> return
+        }
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(uri, mime)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            })
+        } catch (_: Exception) {}
+    }
+
+    private fun openBrowserForRefreshLink(item: DownloadItem) {
+        val intent = Intent(this, com.alexmodzofc.tool.browser.MainActivity::class.java).apply {
+            putExtra(com.alexmodzofc.tool.browser.MainActivity.EXTRA_REFRESH_LINK_MODE, true)
+            putExtra(com.alexmodzofc.tool.browser.MainActivity.EXTRA_REFRESH_LINK_DOWNLOAD_ID, item.id)
+            putExtra(com.alexmodzofc.tool.browser.MainActivity.EXTRA_REFRESH_LINK_FILENAME, item.filename)
+            putExtra(com.alexmodzofc.tool.browser.MainActivity.EXTRA_REFRESH_LINK_ORIGINAL_URL, item.url)
+            putExtra(com.alexmodzofc.tool.browser.MainActivity.EXTRA_REFRESH_LINK_ORIGINAL_REFERER, item.referer)
+        }
+        startActivity(intent)
+    }
+
+}

@@ -1,0 +1,169 @@
+package com.alexmodzofc.tool.settings.sitepermissions
+
+import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
+import com.alexmodzofc.tool.ui.AlexToolRadioButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.view.WindowCompat
+import androidx.preference.PreferenceManager
+import com.alexmodzofc.tool.R
+import com.alexmodzofc.tool.base.AlexToolActivity
+import com.alexmodzofc.tool.setup.DefaultChip
+import com.alexmodzofc.tool.setup.SectionLabel
+import com.alexmodzofc.tool.setup.SelectableCard
+import com.alexmodzofc.tool.ui.rememberMaxContentWidth
+import com.alexmodzofc.tool.settings.site.AddSiteDialog
+import com.alexmodzofc.tool.settings.site.SiteEntry
+import com.alexmodzofc.tool.settings.site.SiteListDeleteConfirmDialog
+import com.alexmodzofc.tool.settings.site.SiteListScreen
+import com.alexmodzofc.tool.settings.site.SiteListUiState
+import com.alexmodzofc.tool.ui.theme.AlexToolComposeTheme
+import com.alexmodzofc.tool.ui.theme.LocalAlexToolColors
+
+/**
+ * Per-permission-type exception manager (camera/mic/location/notifications): a default
+ * behavior chosen from three cards, plus a searchable/sortable list of per-site overrides.
+ * Built on the shared site-list screen; this class only supplies the type-specific config
+ * and owns the SitePermissionManager reads/writes.
+ */
+class SitePermissionActivity : AlexToolActivity() {
+
+    companion object {
+        const val EXTRA_TYPE = "type"
+        const val PREF_VALUE_ASK = "ask"
+        const val PREF_VALUE_DENY = "deny"
+        const val PREF_VALUE_ALLOW = "allow"
+    }
+
+    private fun titleForType(type: String): Int = when (type) {
+        SitePermissionDatabase.TYPE_CAMERA -> R.string.site_settings_camera
+        SitePermissionDatabase.TYPE_MIC -> R.string.site_settings_mic
+        SitePermissionDatabase.TYPE_LOCATION -> R.string.site_settings_location
+        SitePermissionDatabase.TYPE_NOTIFICATION -> R.string.site_settings_notifications
+        else -> R.string.site_settings_camera
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        val type = intent.getStringExtra(EXTRA_TYPE) ?: SitePermissionDatabase.TYPE_CAMERA
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        val theme = prefs.getString("app_theme", "dark") ?: "dark"
+        val hideStatusBar = prefs.getBoolean("hide_status_bar", false)
+        val defaultBehaviorKey = "site_perm_default_$type"
+
+        val listState = SiteListUiState()
+        fun reload() {
+            listState.allItems = SitePermissionManager.getAllByType(this, type).map { SiteEntry(it.first, it.second, it.third) }
+        }
+        reload()
+
+        setContent {
+            AlexToolComposeTheme(theme = theme) {
+                val colors = LocalAlexToolColors.current
+                val maxContentWidth = rememberMaxContentWidth(this)
+                var defaultBehavior by remember {
+                    mutableStateOf(prefs.getString(defaultBehaviorKey, PREF_VALUE_ASK) ?: PREF_VALUE_ASK)
+                }
+
+                Box {
+                    SiteListScreen(
+                        state = listState,
+                        maxContentWidth = maxContentWidth,
+                        title = stringResource(titleForType(type)),
+                        searchHint = stringResource(R.string.site_permission_search_hint),
+                        emptyText = stringResource(R.string.site_permission_no_exceptions),
+                        stateLabel = { state ->
+                            if (state == SitePermissionDatabase.STATE_DENY)
+                                stringResource(R.string.site_permission_state_denied) to colors.secondaryText
+                            else
+                                stringResource(R.string.site_permission_state_allowed) to colors.primary
+                        },
+                        onExit = { finish() },
+                        onAddClick = { listState.addDialogOpen = true },
+                        onDeleteClick = { listState.deleteConfirmOpen = true },
+                        header = {
+                            SectionLabel(
+                                stringResource(R.string.site_permission_default_behavior), colors.primary,
+                                Modifier.padding(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 10.dp)
+                            )
+                            listOf(
+                                Triple(PREF_VALUE_ASK, R.string.site_permission_ask_first, R.string.site_permission_ask_first_desc),
+                                Triple(PREF_VALUE_DENY, R.string.site_permission_always_deny, R.string.site_permission_always_deny_desc),
+                                Triple(PREF_VALUE_ALLOW, R.string.site_permission_always_allow, R.string.site_permission_always_allow_desc)
+                            ).forEach { (value, titleRes, descRes) ->
+                                val selected = defaultBehavior == value
+                                SelectableCard(
+                                    selected = selected,
+                                    onClick = {
+                                        prefs.edit().putString(defaultBehaviorKey, value).apply()
+                                        defaultBehavior = value
+                                    },
+                                    cardBackground = colors.cardBackground, primary = colors.primary,
+                                    modifier = Modifier.padding(horizontal = 12.dp),
+                                    contentPadding = 14.dp, bottomSpacing = 8.dp
+                                ) {
+                                    AlexToolRadioButton(selected = selected)
+                                    Column(Modifier.weight(1f).padding(start = 12.dp, end = 8.dp)) {
+                                        Text(stringResource(titleRes), color = colors.onSurface, fontSize = 15.sp, fontWeight = FontWeight.Medium)
+                                        Text(stringResource(descRes), color = colors.secondaryText, fontSize = 13.sp, modifier = Modifier.padding(top = 2.dp))
+                                    }
+                                    if (value == PREF_VALUE_ASK) DefaultChip(stringResource(R.string.default_label), colors.primary)
+                                }
+                            }
+                            HorizontalDivider(color = colors.divider, modifier = Modifier.padding(top = 4.dp))
+                            SectionLabel(
+                                stringResource(R.string.site_permission_exceptions), colors.primary,
+                                Modifier.padding(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 8.dp)
+                            )
+                        }
+                    )
+
+                    if (listState.addDialogOpen) {
+                        AddSiteDialog(
+                            title = stringResource(R.string.site_permission_add_exception),
+                            hideStatusBar = hideStatusBar,
+                            showStateChoice = true,
+                            onConfirm = { origin, allowed ->
+                                val state = if (allowed) SitePermissionDatabase.STATE_ALLOW else SitePermissionDatabase.STATE_DENY
+                                SitePermissionManager.setState(this@SitePermissionActivity, origin, type, state)
+                                reload()
+                                listState.addDialogOpen = false
+                            },
+                            onDismiss = { listState.addDialogOpen = false }
+                        )
+                    }
+                    if (listState.deleteConfirmOpen) {
+                        SiteListDeleteConfirmDialog(
+                            title = stringResource(R.string.site_permission_delete_confirm_title),
+                            message = stringResource(R.string.site_permission_delete_confirm_message, listState.selectedOrigins.size),
+                            hideStatusBar = hideStatusBar,
+                            onConfirm = {
+                                listState.selectedOrigins.forEach { origin -> SitePermissionManager.deleteEntry(this@SitePermissionActivity, origin, type) }
+                                listState.removeSelectedItems()
+                                listState.deleteConfirmOpen = false
+                                Toast.makeText(this@SitePermissionActivity, getString(R.string.site_permission_items_deleted), Toast.LENGTH_SHORT).show()
+                            },
+                            onDismiss = { listState.deleteConfirmOpen = false }
+                        )
+                    }
+                }
+            }
+        }
+    }
+}

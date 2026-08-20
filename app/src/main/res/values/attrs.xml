@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="alextoolSecondaryTextColor" format="color" />
+    <attr name="alextoolAddressBarColor" format="color" />
+    <attr name="alextoolPopupBackground" format="color" />
+    <attr name="alextoolPopupTextColor" format="color" />
+    <attr name="alextoolPopupStrokeColor" format="color" />
+    <attr name="alextoolPopupCheckColor" format="color" />
+    <attr name="alextoolPopupDividerColor" format="color" />
+    <attr name="alextoolDividerColor" format="color" />
+    <attr name="alextoolSurfaceVariant" format="color" />
+    <attr name="alextoolButtonBackground" format="color" />
+    <attr name="alextoolButtonTextColor" format="color" />
+    <attr name="alextoolButtonIconTint" format="color" />
+    <attr name="alextoolIconTint" format="color" />
+    <attr name="alextoolCardBackground" format="color" />
+</resources>

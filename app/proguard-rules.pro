@@ -1,0 +1,14 @@
+-keep class com.alexmodzofc.tool.** { *; }
+-keepattributes SourceFile,LineNumberTable
+-keep class android.webkit.** { *; }
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-dontwarn javax.annotation.**
+-keep class okhttp3.** { *; }
+-keep class okio.** { *; }
+-keep public class com.caverock.androidsvg.** { *; }
+-keep class com.google.flatbuffers.** { *; }
+-dontwarn com.google.flatbuffers.**
+# Keep launcher icons and drawables referenced from Kotlin code
+-keepnames class com.alexmodzofc.tool.R$drawable
+-keepnames class com.alexmodzofc.tool.R$mipmap

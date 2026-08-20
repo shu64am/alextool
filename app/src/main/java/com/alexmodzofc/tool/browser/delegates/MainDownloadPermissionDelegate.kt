@@ -1,0 +1,245 @@
+package com.alexmodzofc.tool.browser.delegates
+
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
+import android.os.PowerManager
+import android.provider.Settings
+import androidx.core.content.ContextCompat
+import androidx.documentfile.provider.DocumentFile
+import androidx.preference.PreferenceManager
+import com.alexmodzofc.tool.R
+import com.alexmodzofc.tool.browser.MainActivity
+import com.alexmodzofc.tool.downloads.AlexToolDownloadManager
+import com.alexmodzofc.tool.downloads.DownloadFileHelper
+import com.alexmodzofc.tool.settings.downloads.DownloadSettingsKeys
+import java.io.File
+
+internal const val PREF_BATTERY_OPT_ASKED = "battery_opt_asked"
+
+internal fun MainActivity.initiateDownload(
+    url: String,
+    filename: String,
+    userAgent: String,
+    referer: String,
+    cookies: String,
+    retryEnabled: Boolean,
+    unmeteredOnly: Boolean,
+    splitParts: Int,
+    multithreadingParts: Int,
+    speedLimitBytesPerSec: Long,
+    locationMode: String,
+    customLocationUri: String?,
+    scheduledStartAtMillis: Long = 0L,
+    onDismiss: () -> Unit = {},
+    onRename: () -> Unit = {}
+) {
+    if (unmeteredOnly && isNetworkMetered()) {
+        uiState.confirmDialogConfig = com.alexmodzofc.tool.ui.listscreen.ConfirmDialogConfig(
+            title = getString(R.string.download_metered_warning_title),
+            message = getString(R.string.download_metered_warning_message),
+            positiveLabel = getString(R.string.action_yes),
+            onPositive = {
+                proceedWithDownload(url, filename, userAgent, referer, cookies, retryEnabled, false, splitParts, multithreadingParts, speedLimitBytesPerSec, locationMode, customLocationUri, scheduledStartAtMillis, onDismiss, onRename)
+            },
+            negativeLabel = getString(R.string.action_no),
+            onNegative = {
+                proceedWithDownload(url, filename, userAgent, referer, cookies, retryEnabled, true, splitParts, multithreadingParts, speedLimitBytesPerSec, locationMode, customLocationUri, scheduledStartAtMillis, onDismiss, onRename)
+            },
+            neutralLabel = getString(R.string.action_cancel)
+        )
+        return
+    }
+    proceedWithDownload(url, filename, userAgent, referer, cookies, retryEnabled, unmeteredOnly, splitParts, multithreadingParts, speedLimitBytesPerSec, locationMode, customLocationUri, scheduledStartAtMillis, onDismiss, onRename)
+}
+
+private fun MainActivity.proceedWithDownload(
+    url: String,
+    filename: String,
+    userAgent: String,
+    referer: String,
+    cookies: String,
+    retryEnabled: Boolean,
+    unmeteredOnly: Boolean,
+    splitParts: Int,
+    multithreadingParts: Int,
+    speedLimitBytesPerSec: Long,
+    locationMode: String,
+    customLocationUri: String?,
+    scheduledStartAtMillis: Long,
+    onDismiss: () -> Unit,
+    onRename: () -> Unit
+) {
+    val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+    val pm = getSystemService(PowerManager::class.java)
+    if (!prefs.getBoolean(PREF_BATTERY_OPT_ASKED, false) &&
+        !pm.isIgnoringBatteryOptimizations(packageName)
+    ) {
+        prefs.edit().putBoolean(PREF_BATTERY_OPT_ASKED, true).apply()
+        uiState.confirmDialogConfig = com.alexmodzofc.tool.ui.listscreen.ConfirmDialogConfig(
+            title = getString(R.string.battery_opt_rationale_title),
+            message = getString(R.string.battery_opt_rationale_message),
+            cancelable = false,
+            positiveLabel = getString(R.string.action_allow),
+            onPositive = {
+                val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                    data = Uri.parse("package:$packageName")
+                }
+                startActivity(intent)
+                doEnqueueDownload(url, filename, userAgent, referer, cookies, retryEnabled, unmeteredOnly, splitParts, multithreadingParts, speedLimitBytesPerSec, locationMode, customLocationUri, scheduledStartAtMillis, onDismiss, onRename)
+            },
+            negativeLabel = getString(R.string.action_not_now),
+            onNegative = {
+                doEnqueueDownload(url, filename, userAgent, referer, cookies, retryEnabled, unmeteredOnly, splitParts, multithreadingParts, speedLimitBytesPerSec, locationMode, customLocationUri, scheduledStartAtMillis, onDismiss, onRename)
+            }
+        )
+        return
+    }
+    doEnqueueDownload(url, filename, userAgent, referer, cookies, retryEnabled, unmeteredOnly, splitParts, multithreadingParts, speedLimitBytesPerSec, locationMode, customLocationUri, scheduledStartAtMillis, onDismiss, onRename)
+}
+
+private fun MainActivity.doEnqueueDownload(
+    url: String,
+    filename: String,
+    userAgent: String,
+    referer: String,
+    cookies: String,
+    retryEnabled: Boolean,
+    unmeteredOnly: Boolean,
+    splitParts: Int,
+    multithreadingParts: Int,
+    speedLimitBytesPerSec: Long,
+    locationMode: String,
+    customLocationUri: String?,
+    scheduledStartAtMillis: Long,
+    onDismiss: () -> Unit,
+    onRename: () -> Unit
+) {
+    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+        checkConflictAndEnqueue(url, filename, userAgent, referer, cookies, retryEnabled, unmeteredOnly, splitParts, multithreadingParts, speedLimitBytesPerSec, locationMode, customLocationUri, scheduledStartAtMillis, onDismiss, onRename)
+        return
+    }
+
+    if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        == PackageManager.PERMISSION_GRANTED
+    ) {
+        checkConflictAndEnqueue(url, filename, userAgent, referer, cookies, retryEnabled, unmeteredOnly, splitParts, multithreadingParts, speedLimitBytesPerSec, locationMode, customLocationUri, scheduledStartAtMillis, onDismiss, onRename)
+        return
+    }
+
+    pendingDownload = MainActivity.PendingDownload(url, filename, userAgent, referer, cookies)
+
+    uiState.confirmDialogConfig = com.alexmodzofc.tool.ui.listscreen.ConfirmDialogConfig(
+        title = getString(R.string.download_storage_permission_title),
+        message = getString(R.string.download_storage_permission_message),
+        positiveLabel = getString(R.string.action_allow),
+        onPositive = {
+            onDismiss()
+            storagePermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        },
+        negativeLabel = getString(R.string.action_cancel),
+        onNegative = {
+            pendingDownload = null
+            onDismiss()
+        }
+    )
+}
+
+private fun MainActivity.checkConflictAndEnqueue(
+    url: String,
+    filename: String,
+    userAgent: String,
+    referer: String,
+    cookies: String,
+    retryEnabled: Boolean,
+    unmeteredOnly: Boolean,
+    splitParts: Int,
+    multithreadingParts: Int,
+    speedLimitBytesPerSec: Long,
+    locationMode: String,
+    customLocationUri: String?,
+    scheduledStartAtMillis: Long,
+    onDismiss: () -> Unit,
+    onRename: () -> Unit
+) {
+    val existing = AlexToolDownloadManager.findActiveDownloadForUrl(url)
+    if (existing != null) {
+        uiState.confirmDialogConfig = com.alexmodzofc.tool.ui.listscreen.ConfirmDialogConfig(
+            title = getString(R.string.download_already_active_title),
+            message = getString(R.string.download_already_active_message, existing.filename),
+            positiveLabel = getString(R.string.action_download_anyway),
+            onPositive = {
+                checkFilenameConflictAndEnqueue(url, filename, userAgent, referer, cookies, retryEnabled, unmeteredOnly, splitParts, multithreadingParts, speedLimitBytesPerSec, locationMode, customLocationUri, scheduledStartAtMillis, onDismiss, onRename)
+            },
+            negativeLabel = getString(R.string.action_cancel)
+        )
+        return
+    }
+    checkFilenameConflictAndEnqueue(url, filename, userAgent, referer, cookies, retryEnabled, unmeteredOnly, splitParts, multithreadingParts, speedLimitBytesPerSec, locationMode, customLocationUri, scheduledStartAtMillis, onDismiss, onRename)
+}
+
+private fun MainActivity.checkFilenameConflictAndEnqueue(
+    url: String,
+    filename: String,
+    userAgent: String,
+    referer: String,
+    cookies: String,
+    retryEnabled: Boolean,
+    unmeteredOnly: Boolean,
+    splitParts: Int,
+    multithreadingParts: Int,
+    speedLimitBytesPerSec: Long,
+    locationMode: String,
+    customLocationUri: String?,
+    scheduledStartAtMillis: Long,
+    onDismiss: () -> Unit,
+    onRename: () -> Unit
+) {
+    val isSaf = locationMode == DownloadSettingsKeys.MODE_CUSTOM
+    val fileExists = if (isSaf) {
+        val treeUri = customLocationUri?.let { Uri.parse(it) }
+            ?: DownloadFileHelper.getSafTreeUri(this)
+        treeUri?.let { DocumentFile.fromTreeUri(this, it)?.findFile(filename) } != null
+    } else {
+        File(DownloadFileHelper.resolveDownloadDir(), filename).exists()
+    }
+
+    if (!fileExists) {
+        onDismiss()
+        AlexToolDownloadManager.enqueue(this, url, filename, userAgent, referer, cookies, retryEnabled, unmeteredOnly, splitParts, multithreadingParts, speedLimitBytesPerSec, locationMode, customLocationUri, scheduledStartAtMillis)
+        return
+    }
+
+    uiState.conflictDialogRequest = com.alexmodzofc.tool.downloads.DownloadConflictDialogRequest(
+        onAddDuplicate = {
+            onDismiss()
+            AlexToolDownloadManager.enqueue(this, url, filename, userAgent, referer, cookies, retryEnabled, unmeteredOnly, splitParts, multithreadingParts, speedLimitBytesPerSec, locationMode, customLocationUri, scheduledStartAtMillis)
+        },
+        onOverride = {
+            deleteExistingDownload(filename, locationMode, customLocationUri)
+            onDismiss()
+            AlexToolDownloadManager.enqueue(this, url, filename, userAgent, referer, cookies, retryEnabled, unmeteredOnly, splitParts, multithreadingParts, speedLimitBytesPerSec, locationMode, customLocationUri, scheduledStartAtMillis)
+        },
+        onRename = onRename
+    )
+}
+
+private fun MainActivity.deleteExistingDownload(
+    filename: String,
+    locationMode: String,
+    customLocationUri: String?
+) {
+    val matchingIds = AlexToolDownloadManager.downloadsFlow.value.filter { it.filename == filename }.map { it.id }
+    matchingIds.forEach { AlexToolDownloadManager.remove(this, it, deleteFile = true) }
+
+    val isSaf = locationMode == DownloadSettingsKeys.MODE_CUSTOM
+    if (isSaf) {
+        val treeUri = customLocationUri?.let { Uri.parse(it) }
+            ?: DownloadFileHelper.getSafTreeUri(this)
+        treeUri?.let { DocumentFile.fromTreeUri(this, it)?.findFile(filename)?.delete() }
+    } else {
+        File(DownloadFileHelper.resolveDownloadDir(), filename).delete()
+    }
+}
