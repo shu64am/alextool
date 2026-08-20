@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import com.alexmodzofc.tool.util.LocaleHelper
 import com.alexmodzofc.tool.util.loadMeasurementSystemPreference
+import com.alexmodzofc.tool.BuildConfig
 import java.lang.ref.WeakReference
 
 class AlexToolApplication : Application() {
@@ -21,6 +22,7 @@ class AlexToolApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        enforceSecurity()
         applyNightMode()
         loadMeasurementSystemPreference(this)
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
@@ -38,6 +40,16 @@ class AlexToolApplication : Application() {
                 if (_currentActivity?.get() === activity) _currentActivity = null
             }
         })
+    }
+
+    /** Basic anti-tamper protection: on a protected (release) build the app refuses to run
+     *  when a debugger is attached, making live reverse engineering of the running process
+     *  significantly harder. */
+    private fun enforceSecurity() {
+        if (BuildConfig.IS_PROTECTED_BUILD && android.os.Debug.isDebuggerConnected()) {
+            android.os.Process.killProcess(android.os.Process.myPid())
+            System.exit(1)
+        }
     }
 
     fun applyNightMode() {

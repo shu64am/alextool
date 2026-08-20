@@ -1,5 +1,10 @@
 # AlexTool — Changelog
 
+## v1.2.31 (Build 52)
+
+- Security hardening: full code obfuscation enabled (decompiled code is unreadable), anti-debugger protection added, and debug flag disabled in release builds.
+- In-app update checker now fully functional (fetches `Stable.json` / `Beta.json` from the repository).
+
 ## v1.2.28 (Build 50)
 
 - Fixed "LINK USED" / session reuse error in Link Toolkit: alextrick bypass links now open in one fresh tab without restoring the previous session, keeping the same referer, headers, and session.

@@ -1,9 +1,9 @@
 {
-  "version": "1.2.30",
-  "versionCode": 51,
+  "version": "1.2.31",
+  "versionCode": 52,
   "changelog": "Stable release build. See Changelog in the app for full details.",
   "downloads": {
-    "universal": "https://github.com/shu64am/alextool/releases/download/v1.2.30/alextool_universal_v1_2_30.apk",
-    "arm64-v8a": "https://github.com/shu64am/alextool/releases/download/v1.2.30/alextool_arm64_v1_2_30.apk"
+    "universal": "https://github.com/shu64am/alextool/releases/download/v1.2.31/alextool_universal_v1_2_31.apk",
+    "arm64-v8a": "https://github.com/shu64am/alextool/releases/download/v1.2.31/alextool_arm64_v1_2_31.apk"
   }
 }
