@@ -22,8 +22,8 @@ android {
         applicationId = "com.alexmodzofc.tool"
         minSdk = 26
         targetSdk = 37
-        versionCode = 52
-        versionName = "1.2.31"
+        versionCode = 53
+        versionName = "1.2.32"
     }
 
     val hasSigningConfig = localProperties.getProperty("signingConfig.storePassword") != null
@@ -66,6 +66,7 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             isDebuggable = true
+            buildConfigField("boolean", "IS_PROTECTED_BUILD", "false")
         }
     }
 

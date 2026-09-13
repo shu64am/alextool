@@ -98,4 +98,5 @@ internal class MainUiState {
     var popupAlertRequest by mutableStateOf<com.alexmodzofc.tool.browser.dialogs.PopupAlertRequest?>(null)
     var refreshLinkDialogRequest by mutableStateOf<com.alexmodzofc.tool.browser.dialogs.RefreshLinkDialogRequest?>(null)
     var openInAppRequest by mutableStateOf<com.alexmodzofc.tool.browser.webview.OpenInAppRequest?>(null)
+    var telegramJoinDialogVisible by mutableStateOf(false)
 }

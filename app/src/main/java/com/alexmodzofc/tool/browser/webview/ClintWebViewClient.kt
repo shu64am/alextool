@@ -100,6 +100,14 @@ class AlexToolWebViewClient(
         // stale cached result for this host.
         exceptionCacheValid = false
         if (isActive()) onPageStartedCallback(url)
+        // A server-side redirect can reach onPageStarted without first passing through
+        // shouldOverrideUrlLoading on some WebView versions. Stop it here as a final
+        // main-frame safety net so a blocked destination cannot become visible.
+        if (isBlockedMainFrameUrl(view, url)) {
+            view.stopLoading()
+            copyBlockedUrl(view, url)
+            return
+        }
         // AlexTool UserScript GM engine — attach each enabled script's JavascriptInterface
         // (addJavascriptInterface is idempotent, safe to re-register every navigation) and
         // inject the page-side GM_xmlhttpRequest callback registry before any script runs.
@@ -200,6 +208,15 @@ class AlexToolWebViewClient(
             return handleCustomScheme(view, uri)
         }
 
+        // Check the destination before any other main-frame action. This is important
+        // for redirects: the redirect target must not be handed to an external app,
+        // decoded as a tooling target, or reloaded with desktop headers first.
+        if (request.isForMainFrame && isBlockedMainFrameUrl(view, uri.toString())) {
+            view.stopLoading()
+            copyBlockedUrl(view, uri.toString())
+            return true
+        }
+
         if (scheme == "http" && request.isForMainFrame && prefs.getBoolean("https_only", true)) {
             val host = uri.host ?: ""
             val isIpAddress = host.matches(Regex("""^(\d{1,3}\.){3}\d{1,3}$"""))
@@ -219,6 +236,11 @@ class AlexToolWebViewClient(
         if (request.isForMainFrame) {
             val target = runCatching { ExtraToolingManager.decodeToolingTarget(uri.toString()) }.getOrNull()
             if (target != null) {
+                if (isBlockedMainFrameUrl(view, target)) {
+                    view.stopLoading()
+                    copyBlockedUrl(view, target)
+                    return true
+                }
                 val referer = uri.scheme + "://" + (uri.host ?: "") + "/"
                 // Mirror the reference toolkit exactly: Referer carries the
                 // trailing slash, Origin is scheme://host with no slash.
@@ -491,6 +513,9 @@ class AlexToolWebViewClient(
 
         return super.shouldInterceptRequest(view, request)
     }
+
+    private fun isBlockedMainFrameUrl(view: WebView, url: String): Boolean =
+        ExtraToolingManager.isDomainBlocked(view.context.applicationContext, url)
 
     override fun onReceivedSslError(view: WebView, handler: SslErrorHandler, error: SslError) {
         handler.cancel()

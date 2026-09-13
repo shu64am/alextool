@@ -354,6 +354,7 @@ class MainActivity : AlexToolActivity(), OverlayHostActivity, SnackbarHostActivi
         }
         if (systemStatusBarPx > 0) uiState.cachedStatusBarInsetPx = systemStatusBarPx
 
+        uiState.telegramJoinDialogVisible = true
         val startTheme = prefs.getString("app_theme", "dark") ?: "dark"
         setContent {
             AlexToolComposeTheme(theme = startTheme) {

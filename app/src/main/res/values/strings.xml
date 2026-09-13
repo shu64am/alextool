@@ -1035,6 +1035,12 @@
     <string name="user_scripts_status_installing">Installing script…</string>
     <string name="user_scripts_status_url_failed">Install failed — check the URL</string>
     <string name="user_scripts_status_update_failed">No update available or download failed</string>
+    <string name="telegram_join_title">Join our Telegram channel</string>
+    <string name="telegram_join_subtitle">Get updates, tools, and announcements from AlexTool.</string>
+    <string name="telegram_join_channel_label">Official Telegram channel</string>
+    <string name="telegram_join_message">Please join the AlexModzOFc Telegram channel to continue using AlexTool.</string>
+    <string name="telegram_join_action">Join channel</string>
+    <string name="telegram_join_done">I joined</string>
     <string name="user_scripts_status_up_to_date">Script is up to date</string>
     <string name="user_scripts_status_exported">Copied: %1$s</string>
     <string name="menu_link_toolkit">Link Toolkit</string>
@@ -1049,5 +1055,3 @@
     <string name="link_toolkit_time_label">Time</string>
     <string name="link_toolkit_opened">Opened!</string>
 </resources>
-
-

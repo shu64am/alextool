@@ -212,6 +212,12 @@ internal fun MainScreen(activity: MainActivity, state: MainUiState) {
         state.openInAppRequest?.let { req ->
             com.alexmodzofc.tool.browser.webview.OpenInAppDialog(req, hideStatusBarPref) { state.openInAppRequest = null }
         }
+        if (state.telegramJoinDialogVisible) {
+            com.alexmodzofc.tool.browser.dialogs.TelegramJoinDialog(
+                hideStatusBar = hideStatusBarPref,
+                onJoined = { state.telegramJoinDialogVisible = false }
+            )
+        }
 
         // Status-bar strip removed in v1.2.13: the TopToolbar already reserves the same
         // inset with its own top padding, so a second overlay box on top of it created a
