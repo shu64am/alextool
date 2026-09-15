@@ -208,14 +208,11 @@ class AlexToolWebViewClient(
             return handleCustomScheme(view, uri)
         }
 
-        // Check the destination before any other main-frame action. This is important
-        // for redirects: the redirect target must not be handed to an external app,
-        // decoded as a tooling target, or reloaded with desktop headers first.
-        if (request.isForMainFrame && isBlockedMainFrameUrl(view, uri.toString())) {
-            view.stopLoading()
-            copyBlockedUrl(view, uri.toString())
-            return true
-        }
+        // Do not cancel the redirect here. The shortener/source page must receive the
+        // navigation and complete its redirect flow first. The final destination is
+        // checked in onPageStarted(), where it is stopped before blocked content can
+        // become visible. This preserves the source page's normal redirect behavior
+        // while still enforcing the user's blocked-domain policy at the destination.
 
         if (scheme == "http" && request.isForMainFrame && prefs.getBoolean("https_only", true)) {
             val host = uri.host ?: ""

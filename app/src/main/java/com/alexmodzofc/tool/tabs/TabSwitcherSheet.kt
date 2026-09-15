@@ -133,13 +133,13 @@ fun TabSwitcherSheet(activity: MainActivity, onDismiss: () -> Unit) {
                         }
                         IconButton(onClick = { activity.onNewIncognitoTab(); onDismiss() }, modifier = Modifier.size(44.dp).padding(start = 8.dp)) {
                             androidx.compose.foundation.layout.Box(
-                                Modifier.fillMaxSize().background(colors.surfaceVariant, CircleShape),
+                                Modifier.fillMaxSize().background(colors.cardBackground, CircleShape),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(
                                     androidx.compose.material.icons.Icons.Filled.VisibilityOff,
                                     contentDescription = stringResource(R.string.new_incognito_tab),
-                                    tint = colors.secondaryText,
+                                    tint = colors.primary,
                                     modifier = Modifier.size(20.dp)
                                 )
                             }
@@ -176,7 +176,11 @@ private fun ChromeTabGrid(tabs: List<TabPreview>, onClick: (TabPreview) -> Unit,
         columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
-        modifier = Modifier.fillMaxWidth().heightIn(max = 420.dp),
+        // The parent LazyColumn owns scrolling. Give the nested grid its full content height
+        // so tabs are never clipped after the first few rows.
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(((tabs.size + 1) / 2 * 150 + maxOf(0, (tabs.size + 1) / 2 - 1) * 10).dp),
         userScrollEnabled = false
     ) {
         itemsIndexed(tabs, key = { _, tab -> tab.id }) { _, tab ->

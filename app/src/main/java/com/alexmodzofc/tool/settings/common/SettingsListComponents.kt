@@ -98,7 +98,7 @@ fun SettingsRow(
     Row(
         Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
+            .clickable(enabled = enabled, onClick = onClick)
             .alpha(if (enabled) 1f else 0.45f)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically

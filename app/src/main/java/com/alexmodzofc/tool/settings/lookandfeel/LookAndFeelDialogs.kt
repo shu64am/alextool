@@ -83,8 +83,8 @@ fun ThemeSelectorDialog(current: String, hideStatusBar: Boolean, onSelect: (Stri
             ) {
                 DrawableImage(option.drawableRes, modifier = Modifier.size(44.dp))
                 Column(Modifier.weight(1f).padding(start = 16.dp, end = 8.dp)) {
-                    Text(stringResource(option.titleRes), color = colors.onSurface, fontSize = 15.sp, fontWeight = FontWeight.Bold)
-                    Text(stringResource(option.descRes), color = colors.secondaryText, fontSize = 13.sp, modifier = Modifier.padding(top = 2.dp))
+                    Text(stringResource(option.titleRes), color = colors.popupText, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                    Text(stringResource(option.descRes), color = colors.popupText.copy(alpha = 0.72f), fontSize = 13.sp, modifier = Modifier.padding(top = 2.dp))
                 }
                 CheckSlot(current == option.key, colors.primary)
             }
@@ -127,8 +127,8 @@ fun AccentColorDialog(current: String, theme: String, hideStatusBar: Boolean, on
             ) {
                 AccentSwatch(Color(swatch.bg), Color(swatch.surface), Color(swatch.accent))
                 Column(Modifier.weight(1f).padding(start = 16.dp, end = 8.dp)) {
-                    Text(stringResource(option.titleRes), color = colors.onSurface, fontSize = 15.sp, fontWeight = FontWeight.Bold)
-                    Text(stringResource(option.descRes), color = colors.secondaryText, fontSize = 13.sp, modifier = Modifier.padding(top = 2.dp))
+                    Text(stringResource(option.titleRes), color = colors.popupText, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                    Text(stringResource(option.descRes), color = colors.popupText.copy(alpha = 0.72f), fontSize = 13.sp, modifier = Modifier.padding(top = 2.dp))
                 }
                 CheckSlot(current == option.key, colors.primary)
             }
@@ -157,8 +157,8 @@ fun SurfaceIntensityDialog(
         ) {
             AccentSwatch(swatches.softBg, swatches.softSurface, swatches.accent)
             Column(Modifier.weight(1f).padding(start = 16.dp, end = 8.dp)) {
-                Text(stringResource(R.string.surface_intensity_soft), color = colors.onSurface, fontSize = 15.sp, fontWeight = FontWeight.Bold)
-                Text(stringResource(R.string.surface_intensity_soft_desc), color = colors.secondaryText, fontSize = 13.sp, modifier = Modifier.padding(top = 2.dp))
+                Text(stringResource(R.string.surface_intensity_soft), color = colors.popupText, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.surface_intensity_soft_desc), color = colors.popupText.copy(alpha = 0.72f), fontSize = 13.sp, modifier = Modifier.padding(top = 2.dp))
             }
             CheckSlot(current == "soft_tint", colors.primary)
         }
@@ -170,8 +170,8 @@ fun SurfaceIntensityDialog(
             ) {
                 AccentSwatch(swatches.strongBg, swatches.strongSurface, swatches.accent)
                 Column(Modifier.weight(1f).padding(start = 16.dp, end = 8.dp)) {
-                    Text(stringResource(R.string.surface_intensity_strong), color = colors.onSurface, fontSize = 15.sp, fontWeight = FontWeight.Bold)
-                    Text(stringResource(R.string.surface_intensity_strong_desc), color = colors.secondaryText, fontSize = 13.sp, modifier = Modifier.padding(top = 2.dp))
+                    Text(stringResource(R.string.surface_intensity_strong), color = colors.popupText, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.surface_intensity_strong_desc), color = colors.popupText.copy(alpha = 0.72f), fontSize = 13.sp, modifier = Modifier.padding(top = 2.dp))
                 }
                 CheckSlot(current == "strong_tint", colors.primary)
             }
@@ -183,10 +183,10 @@ fun SurfaceIntensityDialog(
         ) {
             AccentSwatch(swatches.pureBg, swatches.pureSurface, swatches.accent)
             Column(Modifier.weight(1f).padding(start = 16.dp, end = 8.dp)) {
-                Text(stringResource(R.string.surface_intensity_pure), color = colors.onSurface, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.surface_intensity_pure), color = colors.popupText, fontSize = 15.sp, fontWeight = FontWeight.Bold)
                 Text(
                     stringResource(if (theme == "light") R.string.surface_intensity_pure_light_desc else R.string.surface_intensity_pure_dark_desc),
-                    color = colors.secondaryText, fontSize = 13.sp, modifier = Modifier.padding(top = 2.dp)
+                    color = colors.popupText.copy(alpha = 0.72f), fontSize = 13.sp, modifier = Modifier.padding(top = 2.dp)
                 )
             }
             CheckSlot(current == "pure_mode", colors.primary)
@@ -205,7 +205,7 @@ fun AddressBarPositionDialog(
 ) {
     val colors = LocalAlexToolColors.current
     val (bg, surface) = rememberBgSurface(theme, accent)
-    val onSurface = colors.onSurface
+    val onSurface = colors.popupText
 
     AlexToolDialog(title = stringResource(R.string.pref_address_bar_position_title), hideStatusBar = hideStatusBar, onDismiss = onDismiss) {
         data class AddrOption(val key: String, val titleRes: Int, val descRes: Int)
@@ -221,8 +221,8 @@ fun AddressBarPositionDialog(
             ) {
                 AddressBarPreview(option.key, bg, surface, onSurface)
                 Column(Modifier.weight(1f).padding(start = 12.dp, end = 8.dp)) {
-                    Text(stringResource(option.titleRes), color = colors.onSurface, fontSize = 15.sp, fontWeight = FontWeight.Medium)
-                    Text(stringResource(option.descRes), color = colors.secondaryText, fontSize = 12.sp, modifier = Modifier.padding(top = 2.dp))
+                    Text(stringResource(option.titleRes), color = colors.popupText, fontSize = 15.sp, fontWeight = FontWeight.Medium)
+                    Text(stringResource(option.descRes), color = colors.popupText.copy(alpha = 0.72f), fontSize = 12.sp, modifier = Modifier.padding(top = 2.dp))
                 }
                 CheckSlot(current == option.key, colors.primary)
             }
@@ -242,7 +242,7 @@ fun MenuStyleDialog(
 ) {
     val colors = LocalAlexToolColors.current
     val (bg, surface) = rememberBgSurface(theme, accent)
-    val onSurface = colors.onSurface
+    val onSurface = colors.popupText
     val panelBg = colors.popupBackground
 
     AlexToolDialog(title = stringResource(R.string.pref_menu_style_title), hideStatusBar = hideStatusBar, onDismiss = onDismiss) {
@@ -258,8 +258,8 @@ fun MenuStyleDialog(
             ) {
                 MenuStylePreview(option.variant, addressBarPosition, bg, surface, onSurface, panelBg)
                 Column(Modifier.weight(1f).padding(start = 12.dp, end = 8.dp)) {
-                    Text(stringResource(option.titleRes), color = colors.onSurface, fontSize = 15.sp, fontWeight = FontWeight.Medium)
-                    Text(stringResource(option.descRes), color = colors.secondaryText, fontSize = 12.sp, modifier = Modifier.padding(top = 2.dp))
+                    Text(stringResource(option.titleRes), color = colors.popupText, fontSize = 15.sp, fontWeight = FontWeight.Medium)
+                    Text(stringResource(option.descRes), color = colors.popupText.copy(alpha = 0.72f), fontSize = 12.sp, modifier = Modifier.padding(top = 2.dp))
                 }
                 CheckSlot(current == option.key, colors.primary)
             }
@@ -284,7 +284,7 @@ fun ScrollHideModeDialog(
 ) {
     val colors = LocalAlexToolColors.current
     val (bg, surface) = rememberBgSurface(theme, accent)
-    val onSurface = colors.onSurface
+    val onSurface = colors.popupText
 
     AlexToolDialog(title = stringResource(R.string.pref_nested_scroll_title), hideStatusBar = hideStatusBar, onDismiss = onDismiss) {
         listOf("off", "search_bar", "navigation_bar", "both").forEach { kind ->
@@ -308,8 +308,8 @@ fun ScrollHideModeDialog(
                 ) {
                     ScrollHidePreview(kind, addressBarPosition, bg, surface, onSurface, animate = kind != "off")
                     Column(Modifier.weight(1f).padding(start = 12.dp, end = 8.dp)) {
-                        Text(stringResource(titleRes), color = colors.onSurface, fontSize = 15.sp, fontWeight = FontWeight.Medium)
-                        Text(stringResource(descRes), color = colors.secondaryText, fontSize = 12.sp, modifier = Modifier.padding(top = 2.dp))
+                        Text(stringResource(titleRes), color = colors.popupText, fontSize = 15.sp, fontWeight = FontWeight.Medium)
+                        Text(stringResource(descRes), color = colors.popupText.copy(alpha = 0.72f), fontSize = 12.sp, modifier = Modifier.padding(top = 2.dp))
                     }
                     CheckSlot(selected, colors.primary)
                 }
@@ -357,8 +357,8 @@ fun ExitConfirmationDialog(
             ) {
                 AlexToolRadioButton(selected = sel)
                 Column(Modifier.weight(1f).padding(start = 12.dp, end = 8.dp)) {
-                    Text(stringResource(option.titleRes), color = colors.onSurface, fontSize = 15.sp, fontWeight = FontWeight.Medium)
-                    Text(stringResource(option.descRes), color = colors.secondaryText, fontSize = 13.sp, modifier = Modifier.padding(top = 2.dp))
+                    Text(stringResource(option.titleRes), color = colors.popupText, fontSize = 15.sp, fontWeight = FontWeight.Medium)
+                    Text(stringResource(option.descRes), color = colors.popupText.copy(alpha = 0.72f), fontSize = 13.sp, modifier = Modifier.padding(top = 2.dp))
                 }
                 if (option.showDefault) DefaultChip(stringResource(R.string.default_label), colors.primary)
             }
@@ -386,8 +386,8 @@ fun LanguageSelectorDialog(current: String, hideStatusBar: Boolean, onSelect: (S
             contentPadding = OptionContentPadding, bottomSpacing = OptionBottomSpacing
         ) {
             Column(Modifier.weight(1f).padding(end = 8.dp)) {
-                Text(stringResource(R.string.language_system), color = colors.onSurface, fontSize = 15.sp, fontWeight = FontWeight.Medium)
-                Text(stringResource(R.string.language_system_desc), color = colors.secondaryText, fontSize = 12.sp, modifier = Modifier.padding(top = 2.dp))
+                Text(stringResource(R.string.language_system), color = colors.popupText, fontSize = 15.sp, fontWeight = FontWeight.Medium)
+                Text(stringResource(R.string.language_system_desc), color = colors.popupText.copy(alpha = 0.72f), fontSize = 12.sp, modifier = Modifier.padding(top = 2.dp))
             }
             CheckSlot(systemSelected, colors.primary)
         }
@@ -401,12 +401,12 @@ fun LanguageSelectorDialog(current: String, hideStatusBar: Boolean, onSelect: (S
                 Column(Modifier.weight(1f).padding(end = 8.dp)) {
                     Text(
                         option.locale.getDisplayName(option.locale).replaceFirstChar { it.titlecase(option.locale) },
-                        color = colors.onSurface, fontSize = 15.sp, fontWeight = FontWeight.Medium
+                        color = colors.popupText, fontSize = 15.sp, fontWeight = FontWeight.Medium
                     )
                     if (option.tag == LocaleHelper.BASE_LANGUAGE_TAG) {
                         Text(
                             stringResource(R.string.language_base_desc),
-                            color = colors.secondaryText, fontSize = 12.sp, modifier = Modifier.padding(top = 2.dp)
+                            color = colors.popupText.copy(alpha = 0.72f), fontSize = 12.sp, modifier = Modifier.padding(top = 2.dp)
                         )
                     }
                 }

@@ -47,7 +47,7 @@ fun SelectableCard(
         modifier = modifier
             .fillMaxWidth()
             .padding(bottom = bottomSpacing)
-            .alpha(if (selected) 1.0f else 0.45f),
+            .alpha(1.0f),
         shape = RoundedCornerShape(14.dp),
         colors = CardDefaults.cardColors(containerColor = cardBackground),
         border = if (selected) BorderStroke(3.dp, primary) else null

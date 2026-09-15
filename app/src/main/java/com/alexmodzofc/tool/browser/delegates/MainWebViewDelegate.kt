@@ -219,9 +219,24 @@ internal fun MainActivity.applyUserAgentMetadata(webView: WebView) {
                 .build()
         )
     } else {
+        val defaultUA = WebSettings.getDefaultUserAgent(this)
+        val chromeVersion = Regex("Chrome/([\\d.]+)").find(defaultUA)?.groupValues?.get(1) ?: "134.0.0.0"
+        val majorVersion = chromeVersion.substringBefore(".")
+        val brands = listOf(
+            UserAgentMetadata.BrandVersion.Builder()
+                .setBrand("Chromium").setMajorVersion(majorVersion).setFullVersion(chromeVersion).build(),
+            UserAgentMetadata.BrandVersion.Builder()
+                .setBrand("Not-A.Brand").setMajorVersion("24").setFullVersion("24.0.0.0").build(),
+            UserAgentMetadata.BrandVersion.Builder()
+                .setBrand("Google Chrome").setMajorVersion(majorVersion).setFullVersion(chromeVersion).build()
+        )
         WebSettingsCompat.setUserAgentMetadata(
             webView.settings,
-            UserAgentMetadata.Builder().build()
+            UserAgentMetadata.Builder()
+                .setBrandVersionList(brands)
+                .setMobile(true)
+                .setPlatform("Android")
+                .build()
         )
     }
 }

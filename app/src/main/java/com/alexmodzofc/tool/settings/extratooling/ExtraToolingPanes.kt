@@ -498,7 +498,12 @@ fun DomainBlockerPane() {
                             title = domain,
                             summary = if (enabled) stringResource(R.string.domain_blocker_status_on) else stringResource(R.string.domain_blocker_status_off),
                             colors = colors,
-                            onClick = { },
+                            onClick = {
+                                val next = disabledDomains.toMutableSet()
+                                if (enabled) next.add(domain) else next.remove(domain)
+                                disabledDomains = next
+                                ExtraToolingManager.saveDisabledDomains(context, next)
+                            },
                             trailing = {
                                 Row(modifier = Modifier.padding(end = 4.dp)) {
                                     Switch(
@@ -608,7 +613,10 @@ fun UserScriptsPane() {
                             title = script.name,
                             summary = "${script.matches.size} match(es) · ${script.runAt}",
                             colors = colors,
-                            onClick = { },
+                            onClick = {
+                                editTarget = script
+                                showAddDialog = true
+                            },
                             trailing = {
                                 Row(modifier = Modifier.padding(end = 4.dp)) {
                                     Switch(

@@ -166,9 +166,18 @@ class SettingsActivity : AlexToolActivity(), OverlayHostActivity {
 @Composable
 private fun SettingsNavHost(activity: SettingsActivity, initialDestination: String?) {
     var selectedDestination by rememberSaveable { mutableStateOf(initialDestination) }
+    // Overflow-menu shortcuts open a detail screen directly. Their back destination is the
+    // browser that launched Settings, not the Settings list that was never shown.
+    val openedDirectly = initialDestination != null
+    fun navigateBack() {
+        if (openedDirectly) activity.finish() else selectedDestination = null
+    }
     val isTwoPane = calculateWindowSizeClass(activity).widthSizeClass != WindowWidthSizeClass.Compact
 
     if (isTwoPane) {
+        if (selectedDestination != null) {
+            BackHandler { navigateBack() }
+        }
         Row(Modifier.fillMaxSize()) {
             Box(Modifier.width(360.dp).fillMaxHeight()) {
                 SettingsListPane(activity = activity) { destination -> selectedDestination = destination }
@@ -177,13 +186,13 @@ private fun SettingsNavHost(activity: SettingsActivity, initialDestination: Stri
                 SettingsDetailPane(
                     activity = activity,
                     destination = selectedDestination,
-                    onBack = { selectedDestination = null }
+                    onBack = { navigateBack() }
                 )
             }
         }
     } else {
         if (selectedDestination != null) {
-            BackHandler { selectedDestination = null }
+            BackHandler { navigateBack() }
         }
         AnimatedContent(
             targetState = selectedDestination,
@@ -193,7 +202,7 @@ private fun SettingsNavHost(activity: SettingsActivity, initialDestination: Stri
             if (destination == null) {
                 SettingsListPane(activity = activity) { newDestination -> selectedDestination = newDestination }
             } else {
-                SettingsDetailPane(activity = activity, destination = destination, onBack = { selectedDestination = null })
+                SettingsDetailPane(activity = activity, destination = destination, onBack = { navigateBack() })
             }
         }
     }

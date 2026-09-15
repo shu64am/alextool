@@ -22,8 +22,8 @@ android {
         applicationId = "com.alexmodzofc.tool"
         minSdk = 26
         targetSdk = 37
-        versionCode = 53
-        versionName = "1.2.32"
+        versionCode = 54
+        versionName = "1.2.33"
     }
 
     val hasSigningConfig = localProperties.getProperty("signingConfig.storePassword") != null

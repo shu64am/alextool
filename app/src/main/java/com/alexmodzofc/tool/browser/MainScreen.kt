@@ -379,13 +379,14 @@ private fun androidx.compose.foundation.layout.RowScope.NavIconButton(
     val colors = LocalAlexToolColors.current
     IconButton(
         onClick = onClick,
+        enabled = enabled,
         modifier = Modifier.weight(1f).fillMaxSize()
     ) {
         Icon(
             imageVector = iconRes,
             contentDescription = description,
             tint = colors.iconTint,
-            modifier = Modifier.alpha(if (enabled) 1.0f else 0.38f)
+            modifier = Modifier.alpha(if (enabled) 1.0f else 0.62f)
         )
     }
 }
