@@ -99,16 +99,15 @@ class AlexToolWebViewClient(
         // tab) is picked up on the very next request instead of serving a
         // stale cached result for this host.
         exceptionCacheValid = false
+        if (isActive()) onPageStartedCallback(url)
         // A server-side redirect can reach onPageStarted without first passing through
         // shouldOverrideUrlLoading on some WebView versions. Stop it here as a final
         // main-frame safety net so a blocked destination cannot become visible.
         if (isBlockedMainFrameUrl(view, url)) {
             view.stopLoading()
-            showBlockedBlankPage(view, url)
             copyBlockedUrl(view, url)
             return
         }
-        if (isActive()) onPageStartedCallback(url)
         // AlexTool UserScript GM engine — attach each enabled script's JavascriptInterface
         // (addJavascriptInterface is idempotent, safe to re-register every navigation) and
         // inject the page-side GM_xmlhttpRequest callback registry before any script runs.
@@ -209,21 +208,14 @@ class AlexToolWebViewClient(
             return handleCustomScheme(view, uri)
         }
 
-        // Block configured main-frame destinations before WebView begins loading them.
-        // This is the original working policy: blocked shorteners never become visible;
-        // onPageStarted below remains a fallback for redirect paths WebView reports late.
+        // Check the destination before any other main-frame action. This is important
+        // for redirects: the redirect target must not be handed to an external app,
+        // decoded as a tooling target, or reloaded with desktop headers first.
         if (request.isForMainFrame && isBlockedMainFrameUrl(view, uri.toString())) {
             view.stopLoading()
-            showBlockedBlankPage(view, uri.toString())
             copyBlockedUrl(view, uri.toString())
             return true
         }
-
-        // Do not cancel the redirect here. The shortener/source page must receive the
-        // navigation and complete its redirect flow first. The final destination is
-        // checked in onPageStarted() and shouldInterceptRequest(), where it is stopped
-        // before blocked content can become visible. This preserves the source page's
-        // normal redirect behavior while still enforcing the destination policy.
 
         if (scheme == "http" && request.isForMainFrame && prefs.getBoolean("https_only", true)) {
             val host = uri.host ?: ""
@@ -488,19 +480,18 @@ class AlexToolWebViewClient(
             }
         }
 
-        // AlexTool Domain Blocker — subresources are cancelled immediately. Main-frame
-        // destinations are deliberately handled in onPageStarted() instead: the source
-        // page must be allowed to complete its redirect to the blocked shortener first,
-        // otherwise the source can detect that navigation was cancelled and show the
-        // wrong page. URLs carrying an alextrick query param remain exempt.
+        // AlexTool Domain Blocker — requests (subresource or main frame) to blocked
+        // domains are cancelled; URLs carrying a alextrick query param are never blocked.
+        // Mirrors the reference toolkit: the blocked link is also copied to the clipboard
+        // with a toast so the user can still reach it when needed.
         val atBlocked = ExtraToolingManager.isDomainBlocked(view.context.applicationContext, request.url.toString())
-        if (atBlocked && !request.isForMainFrame) {
+        if (atBlocked) {
+            if (request.isForMainFrame) {
+                android.os.Handler(android.os.Looper.getMainLooper()).post {
+                    copyBlockedUrl(view, request.url.toString())
+                }
+            }
             return WebResourceResponse("text/plain", "UTF-8", ByteArrayInputStream("".toByteArray()))
-        }
-        if (atBlocked && request.isForMainFrame) {
-            // Do not return a synthetic response here. Let WebView report onPageStarted,
-            // where the destination is stopped without cancelling the redirect chain.
-            return super.shouldInterceptRequest(view, request)
         }
 
         if (quiverGuardEnabled) {
@@ -525,21 +516,6 @@ class AlexToolWebViewClient(
 
     private fun isBlockedMainFrameUrl(view: WebView, url: String): Boolean =
         ExtraToolingManager.isDomainBlocked(view.context.applicationContext, url)
-
-    private fun showBlockedBlankPage(view: WebView, blockedUrl: String) {
-        // Clear the current document in place instead of loadDataWithBaseURL(), which
-        // navigates to about:blank and replaces the blocked URL in the address bar.
-        runCatching {
-            view.evaluateJavascript(
-                "document.documentElement.innerHTML=''; document.body && (document.body.style.background='transparent');",
-                null
-            )
-        }
-        // Keep the address bar/history on the blocked destination for diagnostics and
-        // to make it clear which configured rule stopped the redirect.
-        cachedPageUrl = blockedUrl
-        onTabUrlUpdatedCallback(view, blockedUrl)
-    }
 
     override fun onReceivedSslError(view: WebView, handler: SslErrorHandler, error: SslError) {
         handler.cancel()
