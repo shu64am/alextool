@@ -1,9 +1,9 @@
 {
-  "version": "1.2.33",
-  "versionCode": 54,
-  "changelog": "Improved Chrome compatibility for sites that reject embedded browsers.",
+  "version": "1.2.34",
+  "versionCode": 55,
+  "changelog": "Fixed blocked redirect handling and preserved the blocked destination URL in the address bar.",
   "downloads": {
-    "universal": "https://github.com/shu64am/alextool/releases/download/v1.2.33/alextool_universal_v1_2_33.apk",
-    "arm64-v8a": "https://github.com/shu64am/alextool/releases/download/v1.2.33/alextool_arm64_v1_2_33.apk"
+    "universal": "https://github.com/shu64am/alextool/releases/download/v1.2.34/alextool_universal_v1_2_34.apk",
+    "arm64-v8a": "https://github.com/shu64am/alextool/releases/download/v1.2.34/alextool_arm64_v1_2_34.apk"
   }
 }
