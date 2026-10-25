@@ -1,0 +1,1400 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.AlexToolBrowser" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/purple_200</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/dark_purple</item>
+        <item name="colorSecondary">@color/purple_300</item>
+        <item name="colorOnSecondary">@color/dark_purple</item>
+        <item name="colorSurface">@color/toolbar_color</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="android:colorBackground">@color/surface_dark</item>
+        <item name="android:windowBackground">@color/surface_dark</item>
+        <item name="colorPrimaryContainer">@color/purple_700</item>
+        <item name="colorOnPrimaryContainer">@color/purple_50</item>
+        <item name="android:statusBarColor">@color/toolbar_color</item>
+        <item name="android:navigationBarColor">@color/toolbar_color</item>
+        <item name="alextoolSecondaryTextColor">@color/on_surface_medium</item>
+        <item name="alextoolAddressBarColor">@color/address_bar_color</item>
+        <item name="alextoolPopupBackground">@color/default_popup_background</item>
+        <item name="alextoolPopupTextColor">@color/on_surface</item>
+        <item name="alextoolPopupStrokeColor">@color/default_popup_stroke_color</item>
+        <item name="alextoolPopupCheckColor">@color/default_popup_check_color</item>
+        <item name="alextoolPopupDividerColor">#22BA68C8</item>
+        <item name="alextoolDividerColor">@color/dark_divider_color</item>
+        <item name="alextoolSurfaceVariant">#1AFFFFFF</item>
+        <item name="alextoolButtonBackground">@color/default_button_background</item>
+        <item name="alextoolButtonTextColor">@color/default_button_text</item>
+        <item name="alextoolButtonIconTint">@color/default_button_text</item>
+        <item name="colorSurfaceContainerHigh">?attr/colorSurface</item>
+        <item name="alextoolCardBackground">?attr/colorSurface</item>
+        <item name="alextoolIconTint">?attr/colorPrimary</item>
+        <item name="sliderStyle">@style/Widget.AlexTool.Slider</item>
+    </style>
+
+    <style name="AlexToolDialogShape" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerSize">24dp</item>
+    </style>
+
+    <style name="AlexToolDialogTitle" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="android:textColor">@color/on_surface</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser" parent="" />
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_default_dark</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_default_dark</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorPrimary">@color/purple_300</item>
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="android:textColorSecondary">@color/on_surface_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle</item>
+        <item name="alextoolCardBackground">@color/dialog_card_default_dark</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.Dark" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_dark</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_dark</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorPrimary">@color/dark_theme_accent</item>
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="android:textColorSecondary">@color/on_surface_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle</item>
+    </style>
+
+    <style name="Theme.AlexToolBrowser.Dark" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/dark_theme_accent</item>
+        <item name="colorPrimaryVariant">@color/dark_theme_surface</item>
+        <item name="colorOnPrimary">@color/dark_theme_background</item>
+        <item name="colorSecondary">@color/dark_theme_accent</item>
+        <item name="colorOnSecondary">@color/dark_theme_background</item>
+        <item name="colorSurface">@color/dark_theme_surface</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="android:colorBackground">@color/dark_theme_background</item>
+        <item name="android:windowBackground">@color/dark_theme_background</item>
+        <item name="colorPrimaryContainer">@color/dark_theme_surface</item>
+        <item name="colorOnPrimaryContainer">@color/on_surface</item>
+        <item name="android:statusBarColor">@color/dark_theme_toolbar</item>
+        <item name="android:navigationBarColor">@color/dark_theme_toolbar</item>
+        <item name="alextoolSecondaryTextColor">@color/on_surface_medium</item>
+        <item name="alextoolAddressBarColor">@color/dark_theme_address_bar</item>
+        <item name="alextoolPopupBackground">@color/dark_theme_surface</item>
+        <item name="alextoolPopupTextColor">@color/on_surface</item>
+        <item name="alextoolPopupStrokeColor">#33FFFFFF</item>
+        <item name="alextoolPopupCheckColor">@color/dark_theme_accent</item>
+        <item name="alextoolPopupDividerColor">#22FFFFFF</item>
+        <item name="alextoolDividerColor">@color/dark_divider_color</item>
+        <item name="alextoolSurfaceVariant">#1AFFFFFF</item>
+        <item name="alextoolButtonBackground">@color/dark_button_background</item>
+        <item name="alextoolButtonTextColor">@color/dark_button_text</item>
+        <item name="alextoolButtonIconTint">@color/dark_button_text</item>
+        <item name="colorSurfaceContainerHigh">?attr/colorSurface</item>
+        <item name="alextoolCardBackground">?attr/colorSurface</item>
+        <item name="alextoolIconTint">?attr/colorPrimary</item>
+        <item name="sliderStyle">@style/Widget.AlexTool.Slider</item>
+    </style>
+
+    <style name="Theme.AlexToolBrowser.Light" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/light_theme_accent</item>
+        <item name="colorPrimaryVariant">@color/light_theme_accent</item>
+        <item name="colorOnPrimary">@color/on_surface</item>
+        <item name="colorSecondary">@color/light_theme_accent</item>
+        <item name="colorOnSecondary">@color/on_surface</item>
+        <item name="colorSurface">@color/light_theme_surface</item>
+        <item name="colorOnSurface">@color/on_surface_dark</item>
+        <item name="android:colorBackground">@color/light_theme_background</item>
+        <item name="android:windowBackground">@color/light_theme_background</item>
+        <item name="colorPrimaryContainer">@color/light_theme_surface</item>
+        <item name="colorOnPrimaryContainer">@color/on_surface_dark</item>
+        <item name="android:statusBarColor">@color/light_theme_toolbar</item>
+        <item name="android:navigationBarColor">@color/light_theme_toolbar</item>
+        <item name="android:textColorPrimary">@color/on_surface_dark</item>
+        <item name="android:textColorSecondary">@color/on_surface_dark_medium</item>
+        <item name="alextoolSecondaryTextColor">@color/on_surface_dark_medium</item>
+        <item name="alextoolAddressBarColor">@color/light_theme_address_bar</item>
+        <item name="alextoolPopupBackground">@color/light_popup_background</item>
+        <item name="alextoolPopupTextColor">@color/on_surface_dark</item>
+        <item name="alextoolPopupStrokeColor">@color/light_popup_stroke_color</item>
+        <item name="alextoolPopupCheckColor">@color/light_popup_check_color</item>
+        <item name="alextoolPopupDividerColor">#1A000000</item>
+        <item name="alextoolDividerColor">@color/light_divider_color</item>
+        <item name="alextoolSurfaceVariant">#0A000000</item>
+        <item name="alextoolButtonBackground">@color/light_button_background</item>
+        <item name="alextoolButtonTextColor">@color/light_button_text</item>
+        <item name="alextoolButtonIconTint">@color/light_button_text</item>
+        <item name="colorSurfaceContainerHigh">?attr/colorSurface</item>
+        <item name="alextoolCardBackground">?attr/colorSurface</item>
+        <item name="alextoolIconTint">?attr/colorPrimary</item>
+        <item name="sliderStyle">@style/Widget.AlexTool.Slider</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.Light" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_light</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_light</item>
+        <item name="colorOnSurface">@color/on_surface_dark</item>
+        <item name="colorPrimary">@color/light_theme_accent</item>
+        <item name="android:textColorPrimary">@color/on_surface_dark</item>
+        <item name="android:textColorSecondary">@color/on_surface_dark_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle.Light</item>
+    </style>
+
+    <style name="AlexToolDialogTitle.Light" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="android:textColor">@color/on_surface_dark</item>
+    </style>
+
+    <style name="AlexToolDialogTitle.MaterialYou" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="Theme.AlexToolBrowser.Dark.MaterialYou" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <item name="android:navigationBarColor">?attr/colorSurface</item>
+        <item name="alextoolSecondaryTextColor">?attr/colorOnSurfaceVariant</item>
+        <item name="alextoolAddressBarColor">?attr/colorSurfaceVariant</item>
+        <item name="alextoolPopupBackground">?attr/colorSurfaceContainerHigh</item>
+        <item name="alextoolPopupTextColor">?attr/colorOnSurface</item>
+        <item name="alextoolPopupStrokeColor">#33FFFFFF</item>
+        <item name="alextoolPopupCheckColor">?attr/colorPrimary</item>
+        <item name="alextoolPopupDividerColor">#22FFFFFF</item>
+        <item name="alextoolDividerColor">?attr/colorOutlineVariant</item>
+        <item name="alextoolSurfaceVariant">?attr/colorSurfaceVariant</item>
+        <item name="alextoolButtonBackground">?attr/colorPrimary</item>
+        <item name="alextoolButtonTextColor">?attr/colorOnPrimary</item>
+        <item name="alextoolButtonIconTint">?attr/colorOnPrimary</item>
+        <item name="alextoolCardBackground">?attr/colorSurfaceContainerHigh</item>
+        <item name="alextoolIconTint">?attr/colorPrimary</item>
+        <item name="sliderStyle">@style/Widget.AlexTool.Slider</item>
+    </style>
+
+    <style name="Theme.AlexToolBrowser.Light.MaterialYou" parent="Theme.Material3.Light.NoActionBar">
+        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <item name="android:navigationBarColor">?attr/colorSurface</item>
+        <item name="android:textColorPrimary">?attr/colorOnSurface</item>
+        <item name="android:textColorSecondary">?attr/colorOnSurfaceVariant</item>
+        <item name="alextoolSecondaryTextColor">?attr/colorOnSurfaceVariant</item>
+        <item name="alextoolAddressBarColor">?attr/colorSurfaceVariant</item>
+        <item name="alextoolPopupBackground">?attr/colorSurfaceContainerHigh</item>
+        <item name="alextoolPopupTextColor">?attr/colorOnSurface</item>
+        <item name="alextoolPopupStrokeColor">#1A000000</item>
+        <item name="alextoolPopupCheckColor">?attr/colorPrimary</item>
+        <item name="alextoolPopupDividerColor">#1A000000</item>
+        <item name="alextoolDividerColor">?attr/colorOutlineVariant</item>
+        <item name="alextoolSurfaceVariant">?attr/colorSurfaceVariant</item>
+        <item name="alextoolButtonBackground">?attr/colorPrimary</item>
+        <item name="alextoolButtonTextColor">?attr/colorOnPrimary</item>
+        <item name="alextoolButtonIconTint">?attr/colorOnPrimary</item>
+        <item name="alextoolCardBackground">?attr/colorSurfaceContainerHigh</item>
+        <item name="alextoolIconTint">?attr/colorPrimary</item>
+        <item name="sliderStyle">@style/Widget.AlexTool.Slider</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.Dark.MaterialYou" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">?attr/colorSurfaceContainerHigh</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle.MaterialYou</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.Light.MaterialYou" parent="ThemeOverlay.AlexToolBrowser.Dialog.Dark.MaterialYou" />
+
+    <style name="Theme.AlexToolBrowser.MaterialYou" parent="Theme.AlexToolBrowser">
+        <item name="alextoolButtonBackground">?attr/colorPrimary</item>
+        <item name="alextoolButtonTextColor">?attr/colorOnPrimary</item>
+        <item name="alextoolButtonIconTint">?attr/colorOnPrimary</item>
+        <item name="alextoolPopupCheckColor">?attr/colorPrimary</item>
+        <item name="alextoolIconTint">?attr/colorPrimary</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.PreserveDefaultBackground">
+        <item name="android:colorBackground">@color/surface_dark</item>
+        <item name="android:windowBackground">@color/surface_dark</item>
+        <item name="colorSurface">@color/toolbar_color</item>
+        <item name="colorSurfaceContainerHigh">@color/toolbar_color</item>
+        <item name="android:statusBarColor">@color/toolbar_color</item>
+        <item name="android:navigationBarColor">@color/toolbar_color</item>
+        <item name="alextoolAddressBarColor">@color/address_bar_color</item>
+        <item name="alextoolPopupBackground">@color/default_popup_background</item>
+        <item name="alextoolCardBackground">@color/toolbar_color</item>
+        <item name="alextoolSecondaryTextColor">@color/on_surface_medium</item>
+        <item name="alextoolDividerColor">@color/dark_divider_color</item>
+        <item name="alextoolSurfaceVariant">#1AFFFFFF</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.Default.MaterialYou" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/toolbar_color</item>
+        <item name="colorSurfaceContainerHigh">@color/toolbar_color</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="android:textColorSecondary">@color/on_surface_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle</item>
+    </style>
+
+    <style name="Theme.AlexToolBrowser.Purple" parent="Theme.AlexToolBrowser">
+        <item name="colorPrimary">@color/purple_accent_primary</item>
+        <item name="colorOnPrimary">@color/purple_accent_dark_bg</item>
+        <item name="colorPrimaryContainer">@color/purple_accent_dark_surface</item>
+        <item name="colorSecondary">@color/purple_accent_primary</item>
+        <item name="alextoolPopupCheckColor">@color/purple_accent_primary</item>
+        <item name="alextoolPopupStrokeColor">#339B7EDB</item>
+        <item name="alextoolPopupDividerColor">#229B7EDB</item>
+        <item name="alextoolButtonBackground">@color/purple_accent_button</item>
+        <item name="alextoolButtonTextColor">@color/on_surface</item>
+        <item name="alextoolButtonIconTint">@color/on_surface</item>
+        <item name="alextoolIconTint">@color/purple_accent_primary</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.Purple" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_purple_dark</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_purple_dark</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorPrimary">@color/purple_accent_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="android:textColorSecondary">@color/on_surface_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle</item>
+    </style>
+
+    <style name="Theme.AlexToolBrowser.Dark.Purple" parent="Theme.AlexToolBrowser.Dark">
+        <item name="colorPrimary">@color/purple_accent_primary</item>
+        <item name="colorPrimaryVariant">@color/purple_accent_dark_surface</item>
+        <item name="colorOnPrimary">@color/purple_accent_dark_bg</item>
+        <item name="colorSecondary">@color/purple_accent_primary</item>
+        <item name="colorOnSecondary">@color/purple_accent_dark_bg</item>
+        <item name="colorSurface">@color/purple_accent_dark_surface</item>
+        <item name="android:colorBackground">@color/purple_accent_dark_bg</item>
+        <item name="android:windowBackground">@color/purple_accent_dark_bg</item>
+        <item name="colorPrimaryContainer">@color/purple_accent_dark_surface</item>
+        <item name="android:statusBarColor">@color/purple_accent_dark_surface</item>
+        <item name="android:navigationBarColor">@color/purple_accent_dark_surface</item>
+        <item name="alextoolAddressBarColor">@color/purple_accent_dark_address_bar</item>
+        <item name="alextoolPopupBackground">@color/purple_accent_dark_surface</item>
+        <item name="alextoolPopupStrokeColor">#339B7EDB</item>
+        <item name="alextoolPopupCheckColor">@color/purple_accent_primary</item>
+        <item name="alextoolPopupDividerColor">#229B7EDB</item>
+        <item name="alextoolButtonBackground">@color/purple_accent_button</item>
+        <item name="alextoolButtonTextColor">@color/on_surface</item>
+        <item name="alextoolButtonIconTint">@color/on_surface</item>
+        <item name="alextoolIconTint">@color/purple_accent_primary</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.Dark.Purple" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_purple_dark</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_purple_dark</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorPrimary">@color/purple_accent_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="android:textColorSecondary">@color/on_surface_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle</item>
+    </style>
+
+    <style name="Theme.AlexToolBrowser.Light.Purple" parent="Theme.AlexToolBrowser.Light">
+        <item name="colorPrimary">@color/purple_accent_light_primary</item>
+        <item name="colorPrimaryVariant">@color/purple_accent_light_primary</item>
+        <item name="colorOnPrimary">@color/on_surface</item>
+        <item name="colorSecondary">@color/purple_accent_light_primary</item>
+        <item name="colorOnSecondary">@color/on_surface</item>
+        <item name="colorSurface">@color/purple_accent_light_surface</item>
+        <item name="android:colorBackground">@color/purple_accent_light_bg</item>
+        <item name="android:windowBackground">@color/purple_accent_light_bg</item>
+        <item name="colorPrimaryContainer">@color/purple_accent_light_surface</item>
+        <item name="android:statusBarColor">@color/purple_accent_light_surface</item>
+        <item name="android:navigationBarColor">@color/purple_accent_light_surface</item>
+        <item name="alextoolAddressBarColor">@color/purple_accent_light_address_bar</item>
+        <item name="alextoolPopupBackground">@color/purple_accent_light_surface</item>
+        <item name="alextoolPopupStrokeColor">#1A7053B5</item>
+        <item name="alextoolPopupCheckColor">@color/purple_accent_light_primary</item>
+        <item name="alextoolButtonBackground">@color/purple_accent_light_primary</item>
+        <item name="alextoolButtonTextColor">@color/on_surface</item>
+        <item name="alextoolButtonIconTint">@color/on_surface</item>
+        <item name="alextoolIconTint">@color/purple_accent_light_primary</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.Light.Purple" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_purple_light</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_purple_light</item>
+        <item name="colorOnSurface">@color/on_surface_dark</item>
+        <item name="colorPrimary">@color/purple_accent_light_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface_dark</item>
+        <item name="android:textColorSecondary">@color/on_surface_dark_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle.Light</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.SoftTint.Purple.Dark" parent="">
+        <item name="android:colorBackground">@color/purple_accent_dark_bg_soft</item>
+        <item name="android:windowBackground">@color/purple_accent_dark_bg_soft</item>
+        <item name="colorSurface">@color/purple_accent_dark_surface_soft</item>
+        <item name="colorSurfaceContainerHigh">@color/purple_accent_dark_surface_soft</item>
+        <item name="colorPrimaryContainer">@color/purple_accent_dark_surface_soft</item>
+        <item name="android:statusBarColor">@color/purple_accent_dark_surface_soft</item>
+        <item name="android:navigationBarColor">@color/purple_accent_dark_surface_soft</item>
+        <item name="alextoolAddressBarColor">@color/purple_accent_dark_address_bar_soft</item>
+        <item name="alextoolPopupBackground">@color/purple_accent_dark_surface_soft</item>
+        <item name="alextoolCardBackground">@color/purple_accent_dark_surface_soft</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.SoftTint.Purple.Light" parent="">
+        <item name="android:colorBackground">@color/purple_accent_light_bg_soft</item>
+        <item name="android:windowBackground">@color/purple_accent_light_bg_soft</item>
+        <item name="colorSurface">@color/purple_accent_light_surface_soft</item>
+        <item name="colorSurfaceContainerHigh">@color/purple_accent_light_surface_soft</item>
+        <item name="colorPrimaryContainer">@color/purple_accent_light_surface_soft</item>
+        <item name="android:statusBarColor">@color/purple_accent_light_surface_soft</item>
+        <item name="android:navigationBarColor">@color/purple_accent_light_surface_soft</item>
+        <item name="alextoolAddressBarColor">@color/purple_accent_light_address_bar_soft</item>
+        <item name="alextoolPopupBackground">@color/purple_accent_light_surface_soft</item>
+        <item name="alextoolCardBackground">@color/purple_accent_light_surface_soft</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.SoftTint.MaterialYou.Dark" parent="">
+        <item name="colorSurface">?attr/colorSurfaceContainer</item>
+        <item name="android:statusBarColor">?attr/colorSurfaceContainer</item>
+        <item name="android:navigationBarColor">?attr/colorSurfaceContainer</item>
+        <item name="alextoolAddressBarColor">?attr/colorSurfaceContainerHighest</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.SoftTint.MaterialYou.Light" parent="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.SoftTint.MaterialYou.Dark" />
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.PureMode.Dark" parent="">
+        <item name="android:colorBackground">@color/pure_mode_dark_bg</item>
+        <item name="android:windowBackground">@color/pure_mode_dark_bg</item>
+        <item name="colorSurface">@color/pure_mode_dark_surface</item>
+        <item name="colorPrimaryContainer">@color/pure_mode_dark_surface</item>
+        <item name="android:statusBarColor">@color/pure_mode_dark_surface</item>
+        <item name="android:navigationBarColor">@color/pure_mode_dark_surface</item>
+        <item name="alextoolAddressBarColor">@color/pure_mode_dark_address_bar</item>
+        <item name="alextoolPopupBackground">@color/pure_mode_dark_dialog_surface</item>
+        <item name="alextoolCardBackground">@color/pure_mode_dark_card</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.PureMode.Light" parent="">
+        <item name="android:colorBackground">@color/pure_mode_light_bg</item>
+        <item name="android:windowBackground">@color/pure_mode_light_bg</item>
+        <item name="colorSurface">@color/pure_mode_light_surface</item>
+        <item name="colorPrimaryContainer">@color/pure_mode_light_surface</item>
+        <item name="android:statusBarColor">@color/pure_mode_light_surface</item>
+        <item name="android:navigationBarColor">@color/pure_mode_light_surface</item>
+        <item name="alextoolAddressBarColor">@color/pure_mode_light_address_bar</item>
+        <item name="alextoolPopupBackground">@color/pure_mode_light_dialog_surface</item>
+        <item name="alextoolCardBackground">@color/pure_mode_light_card</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.PureMode.MaterialYou.Dark" parent="">
+        <item name="android:colorBackground">@color/pure_mode_dark_bg</item>
+        <item name="android:windowBackground">@color/pure_mode_dark_bg</item>
+        <item name="colorSurface">@color/pure_mode_dark_surface</item>
+        <item name="colorPrimaryContainer">@color/pure_mode_dark_surface</item>
+        <item name="android:statusBarColor">@color/pure_mode_dark_surface</item>
+        <item name="android:navigationBarColor">@color/pure_mode_dark_surface</item>
+        <item name="alextoolAddressBarColor">?attr/colorSurfaceContainerHigh</item>
+        <item name="alextoolPopupBackground">?attr/colorSurfaceContainerHigh</item>
+        <item name="alextoolCardBackground">?attr/colorSurfaceContainer</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.PureMode.MaterialYou.Light" parent="">
+        <item name="android:colorBackground">@color/pure_mode_light_bg</item>
+        <item name="android:windowBackground">@color/pure_mode_light_bg</item>
+        <item name="colorSurface">@color/pure_mode_light_surface</item>
+        <item name="colorPrimaryContainer">@color/pure_mode_light_surface</item>
+        <item name="android:statusBarColor">@color/pure_mode_light_surface</item>
+        <item name="android:navigationBarColor">@color/pure_mode_light_surface</item>
+        <item name="alextoolAddressBarColor">?attr/colorSurfaceContainerHigh</item>
+        <item name="alextoolPopupBackground">?attr/colorSurfaceContainerHigh</item>
+        <item name="alextoolCardBackground">?attr/colorSurfaceContainer</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.PureMode.Purple.Dark" parent="">
+        <item name="android:colorBackground">@color/pure_mode_dark_bg</item>
+        <item name="android:windowBackground">@color/pure_mode_dark_bg</item>
+        <item name="colorSurface">@color/pure_mode_dark_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_dark_surface</item>
+        <item name="colorPrimaryContainer">@color/pure_mode_dark_surface</item>
+        <item name="android:statusBarColor">@color/pure_mode_dark_surface</item>
+        <item name="android:navigationBarColor">@color/pure_mode_dark_surface</item>
+        <item name="alextoolAddressBarColor">@color/purple_accent_dark_address_bar_soft</item>
+        <item name="alextoolPopupBackground">@color/pure_mode_dark_dialog_surface</item>
+        <item name="alextoolCardBackground">@color/pure_mode_dark_purple_card</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.PureMode.Purple.Light" parent="">
+        <item name="android:colorBackground">@color/pure_mode_light_bg</item>
+        <item name="android:windowBackground">@color/pure_mode_light_bg</item>
+        <item name="colorSurface">@color/pure_mode_light_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_light_surface</item>
+        <item name="colorPrimaryContainer">@color/pure_mode_light_surface</item>
+        <item name="android:statusBarColor">@color/pure_mode_light_surface</item>
+        <item name="android:navigationBarColor">@color/pure_mode_light_surface</item>
+        <item name="alextoolAddressBarColor">@color/pure_mode_light_purple_address_bar</item>
+        <item name="alextoolPopupBackground">@color/pure_mode_light_dialog_surface</item>
+        <item name="alextoolCardBackground">@color/pure_mode_light_purple_card</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.SoftTint.Purple.Dark" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_purple_dark_soft</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_purple_dark_soft</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorPrimary">@color/purple_accent_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="android:textColorSecondary">@color/on_surface_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.SoftTint.Purple.Light" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_purple_light_soft</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_purple_light_soft</item>
+        <item name="colorOnSurface">@color/on_surface_dark</item>
+        <item name="colorPrimary">@color/purple_accent_light_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface_dark</item>
+        <item name="android:textColorSecondary">@color/on_surface_dark_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle.Light</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.PureMode.Dark" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/pure_mode_dark_dialog_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_dark_dialog_surface</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="android:textColorSecondary">@color/on_surface_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.PureMode.Light" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/pure_mode_light_dialog_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_light_dialog_surface</item>
+        <item name="colorOnSurface">@color/on_surface_dark</item>
+        <item name="android:textColorPrimary">@color/on_surface_dark</item>
+        <item name="android:textColorSecondary">@color/on_surface_dark_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle.Light</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.PureMode.MaterialYou.Dark" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/pure_mode_dark_dialog_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_dark_dialog_surface</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle.MaterialYou</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.PureMode.MaterialYou.Light" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/pure_mode_light_dialog_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_light_dialog_surface</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle.MaterialYou</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.PureMode.Purple.Dark" parent="ThemeOverlay.AlexToolBrowser.Dialog.SoftTint.Purple.Dark">
+        <item name="colorSurface">@color/pure_mode_dark_dialog_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_dark_dialog_surface</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.PureMode.Purple.Light" parent="ThemeOverlay.AlexToolBrowser.Dialog.SoftTint.Purple.Light">
+        <item name="colorSurface">@color/pure_mode_light_dialog_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_light_dialog_surface</item>
+    </style>
+
+    <style name="Theme.AlexToolBrowser.Blue" parent="Theme.AlexToolBrowser">
+        <item name="colorPrimary">@color/blue_accent_primary</item>
+        <item name="colorOnPrimary">@color/blue_accent_dark_bg</item>
+        <item name="colorPrimaryContainer">@color/blue_accent_dark_surface</item>
+        <item name="colorSecondary">@color/blue_accent_primary</item>
+        <item name="alextoolPopupCheckColor">@color/blue_accent_primary</item>
+        <item name="alextoolPopupStrokeColor">#3379ADEF</item>
+        <item name="alextoolPopupDividerColor">#2279ADEF</item>
+        <item name="alextoolButtonBackground">@color/blue_accent_button</item>
+        <item name="alextoolButtonTextColor">@color/on_surface</item>
+        <item name="alextoolButtonIconTint">@color/on_surface</item>
+        <item name="alextoolIconTint">@color/blue_accent_primary</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.Blue" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_blue_dark</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_blue_dark</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorPrimary">@color/blue_accent_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="android:textColorSecondary">@color/on_surface_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle</item>
+    </style>
+
+    <style name="Theme.AlexToolBrowser.Dark.Blue" parent="Theme.AlexToolBrowser.Dark">
+        <item name="colorPrimary">@color/blue_accent_primary</item>
+        <item name="colorPrimaryVariant">@color/blue_accent_dark_surface</item>
+        <item name="colorOnPrimary">@color/blue_accent_dark_bg</item>
+        <item name="colorSecondary">@color/blue_accent_primary</item>
+        <item name="colorOnSecondary">@color/blue_accent_dark_bg</item>
+        <item name="colorSurface">@color/blue_accent_dark_surface</item>
+        <item name="android:colorBackground">@color/blue_accent_dark_bg</item>
+        <item name="android:windowBackground">@color/blue_accent_dark_bg</item>
+        <item name="colorPrimaryContainer">@color/blue_accent_dark_surface</item>
+        <item name="android:statusBarColor">@color/blue_accent_dark_surface</item>
+        <item name="android:navigationBarColor">@color/blue_accent_dark_surface</item>
+        <item name="alextoolAddressBarColor">@color/blue_accent_dark_address_bar</item>
+        <item name="alextoolPopupBackground">@color/blue_accent_dark_surface</item>
+        <item name="alextoolPopupStrokeColor">#3379ADEF</item>
+        <item name="alextoolPopupCheckColor">@color/blue_accent_primary</item>
+        <item name="alextoolPopupDividerColor">#2279ADEF</item>
+        <item name="alextoolButtonBackground">@color/blue_accent_button</item>
+        <item name="alextoolButtonTextColor">@color/on_surface</item>
+        <item name="alextoolButtonIconTint">@color/on_surface</item>
+        <item name="alextoolIconTint">@color/blue_accent_primary</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.Dark.Blue" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_blue_dark</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_blue_dark</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorPrimary">@color/blue_accent_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="android:textColorSecondary">@color/on_surface_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle</item>
+    </style>
+
+    <style name="Theme.AlexToolBrowser.Light.Blue" parent="Theme.AlexToolBrowser.Light">
+        <item name="colorPrimary">@color/blue_accent_light_primary</item>
+        <item name="colorPrimaryVariant">@color/blue_accent_light_primary</item>
+        <item name="colorOnPrimary">@color/on_surface</item>
+        <item name="colorSecondary">@color/blue_accent_light_primary</item>
+        <item name="colorOnSecondary">@color/on_surface</item>
+        <item name="colorSurface">@color/blue_accent_light_surface</item>
+        <item name="android:colorBackground">@color/blue_accent_light_bg</item>
+        <item name="android:windowBackground">@color/blue_accent_light_bg</item>
+        <item name="colorPrimaryContainer">@color/blue_accent_light_surface</item>
+        <item name="android:statusBarColor">@color/blue_accent_light_surface</item>
+        <item name="android:navigationBarColor">@color/blue_accent_light_surface</item>
+        <item name="alextoolAddressBarColor">@color/blue_accent_light_address_bar</item>
+        <item name="alextoolPopupBackground">@color/blue_accent_light_surface</item>
+        <item name="alextoolPopupStrokeColor">#1A1B58B0</item>
+        <item name="alextoolPopupCheckColor">@color/blue_accent_light_primary</item>
+        <item name="alextoolButtonBackground">@color/blue_accent_light_primary</item>
+        <item name="alextoolButtonTextColor">@color/on_surface</item>
+        <item name="alextoolButtonIconTint">@color/on_surface</item>
+        <item name="alextoolIconTint">@color/blue_accent_light_primary</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.Light.Blue" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_blue_light</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_blue_light</item>
+        <item name="colorOnSurface">@color/on_surface_dark</item>
+        <item name="colorPrimary">@color/blue_accent_light_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface_dark</item>
+        <item name="android:textColorSecondary">@color/on_surface_dark_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle.Light</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.SoftTint.Blue.Dark" parent="">
+        <item name="android:colorBackground">@color/blue_accent_dark_bg_soft</item>
+        <item name="android:windowBackground">@color/blue_accent_dark_bg_soft</item>
+        <item name="colorSurface">@color/blue_accent_dark_surface_soft</item>
+        <item name="colorSurfaceContainerHigh">@color/blue_accent_dark_surface_soft</item>
+        <item name="colorPrimaryContainer">@color/blue_accent_dark_surface_soft</item>
+        <item name="android:statusBarColor">@color/blue_accent_dark_surface_soft</item>
+        <item name="android:navigationBarColor">@color/blue_accent_dark_surface_soft</item>
+        <item name="alextoolAddressBarColor">@color/blue_accent_dark_address_bar_soft</item>
+        <item name="alextoolPopupBackground">@color/blue_accent_dark_surface_soft</item>
+        <item name="alextoolCardBackground">@color/blue_accent_dark_surface_soft</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.SoftTint.Blue.Light" parent="">
+        <item name="android:colorBackground">@color/blue_accent_light_bg_soft</item>
+        <item name="android:windowBackground">@color/blue_accent_light_bg_soft</item>
+        <item name="colorSurface">@color/blue_accent_light_surface_soft</item>
+        <item name="colorSurfaceContainerHigh">@color/blue_accent_light_surface_soft</item>
+        <item name="colorPrimaryContainer">@color/blue_accent_light_surface_soft</item>
+        <item name="android:statusBarColor">@color/blue_accent_light_surface_soft</item>
+        <item name="android:navigationBarColor">@color/blue_accent_light_surface_soft</item>
+        <item name="alextoolAddressBarColor">@color/blue_accent_light_address_bar_soft</item>
+        <item name="alextoolPopupBackground">@color/blue_accent_light_surface_soft</item>
+        <item name="alextoolCardBackground">@color/blue_accent_light_surface_soft</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.PureMode.Blue.Dark" parent="">
+        <item name="android:colorBackground">@color/pure_mode_dark_bg</item>
+        <item name="android:windowBackground">@color/pure_mode_dark_bg</item>
+        <item name="colorSurface">@color/pure_mode_dark_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_dark_surface</item>
+        <item name="colorPrimaryContainer">@color/pure_mode_dark_surface</item>
+        <item name="android:statusBarColor">@color/pure_mode_dark_surface</item>
+        <item name="android:navigationBarColor">@color/pure_mode_dark_surface</item>
+        <item name="alextoolAddressBarColor">@color/blue_accent_dark_address_bar_soft</item>
+        <item name="alextoolPopupBackground">@color/pure_mode_dark_dialog_surface</item>
+        <item name="alextoolCardBackground">@color/pure_mode_dark_blue_card</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.PureMode.Blue.Light" parent="">
+        <item name="android:colorBackground">@color/pure_mode_light_bg</item>
+        <item name="android:windowBackground">@color/pure_mode_light_bg</item>
+        <item name="colorSurface">@color/pure_mode_light_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_light_surface</item>
+        <item name="colorPrimaryContainer">@color/pure_mode_light_surface</item>
+        <item name="android:statusBarColor">@color/pure_mode_light_surface</item>
+        <item name="android:navigationBarColor">@color/pure_mode_light_surface</item>
+        <item name="alextoolAddressBarColor">@color/pure_mode_light_blue_address_bar</item>
+        <item name="alextoolPopupBackground">@color/pure_mode_light_dialog_surface</item>
+        <item name="alextoolCardBackground">@color/pure_mode_light_blue_card</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.SoftTint.Blue.Dark" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_blue_dark_soft</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_blue_dark_soft</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorPrimary">@color/blue_accent_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="android:textColorSecondary">@color/on_surface_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.SoftTint.Blue.Light" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_blue_light_soft</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_blue_light_soft</item>
+        <item name="colorOnSurface">@color/on_surface_dark</item>
+        <item name="colorPrimary">@color/blue_accent_light_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface_dark</item>
+        <item name="android:textColorSecondary">@color/on_surface_dark_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle.Light</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.PureMode.Blue.Dark" parent="ThemeOverlay.AlexToolBrowser.Dialog.SoftTint.Blue.Dark">
+        <item name="colorSurface">@color/pure_mode_dark_dialog_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_dark_dialog_surface</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.PureMode.Blue.Light" parent="ThemeOverlay.AlexToolBrowser.Dialog.SoftTint.Blue.Light">
+        <item name="colorSurface">@color/pure_mode_light_dialog_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_light_dialog_surface</item>
+    </style>
+
+    <style name="Theme.AlexToolBrowser.Yellow" parent="Theme.AlexToolBrowser">
+        <item name="colorPrimary">@color/yellow_accent_primary</item>
+        <item name="colorOnPrimary">@color/yellow_accent_dark_bg</item>
+        <item name="colorPrimaryContainer">@color/yellow_accent_dark_surface</item>
+        <item name="colorSecondary">@color/yellow_accent_primary</item>
+        <item name="alextoolPopupCheckColor">@color/yellow_accent_primary</item>
+        <item name="alextoolPopupStrokeColor">#33F4EF42</item>
+        <item name="alextoolPopupDividerColor">#22F4EF42</item>
+        <item name="alextoolButtonBackground">@color/yellow_accent_button</item>
+        <item name="alextoolButtonTextColor">@color/on_surface</item>
+        <item name="alextoolButtonIconTint">@color/on_surface</item>
+        <item name="alextoolIconTint">@color/yellow_accent_primary</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.Yellow" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_yellow_dark</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_yellow_dark</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorPrimary">@color/yellow_accent_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="android:textColorSecondary">@color/on_surface_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle</item>
+    </style>
+
+    <style name="Theme.AlexToolBrowser.Dark.Yellow" parent="Theme.AlexToolBrowser.Dark">
+        <item name="colorPrimary">@color/yellow_accent_primary</item>
+        <item name="colorPrimaryVariant">@color/yellow_accent_dark_surface</item>
+        <item name="colorOnPrimary">@color/yellow_accent_dark_bg</item>
+        <item name="colorSecondary">@color/yellow_accent_primary</item>
+        <item name="colorOnSecondary">@color/yellow_accent_dark_bg</item>
+        <item name="colorSurface">@color/yellow_accent_dark_surface</item>
+        <item name="android:colorBackground">@color/yellow_accent_dark_bg</item>
+        <item name="android:windowBackground">@color/yellow_accent_dark_bg</item>
+        <item name="colorPrimaryContainer">@color/yellow_accent_dark_surface</item>
+        <item name="android:statusBarColor">@color/yellow_accent_dark_surface</item>
+        <item name="android:navigationBarColor">@color/yellow_accent_dark_surface</item>
+        <item name="alextoolAddressBarColor">@color/yellow_accent_dark_address_bar</item>
+        <item name="alextoolPopupBackground">@color/yellow_accent_dark_surface</item>
+        <item name="alextoolPopupStrokeColor">#33F4EF42</item>
+        <item name="alextoolPopupCheckColor">@color/yellow_accent_primary</item>
+        <item name="alextoolPopupDividerColor">#22F4EF42</item>
+        <item name="alextoolButtonBackground">@color/yellow_accent_button</item>
+        <item name="alextoolButtonTextColor">@color/on_surface</item>
+        <item name="alextoolButtonIconTint">@color/on_surface</item>
+        <item name="alextoolIconTint">@color/yellow_accent_primary</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.Dark.Yellow" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_yellow_dark</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_yellow_dark</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorPrimary">@color/yellow_accent_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="android:textColorSecondary">@color/on_surface_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle</item>
+    </style>
+
+    <style name="Theme.AlexToolBrowser.Light.Yellow" parent="Theme.AlexToolBrowser.Light">
+        <item name="colorPrimary">@color/yellow_accent_light_primary</item>
+        <item name="colorPrimaryVariant">@color/yellow_accent_light_primary</item>
+        <item name="colorOnPrimary">@color/on_surface</item>
+        <item name="colorSecondary">@color/yellow_accent_light_primary</item>
+        <item name="colorOnSecondary">@color/on_surface</item>
+        <item name="colorSurface">@color/yellow_accent_light_surface</item>
+        <item name="android:colorBackground">@color/yellow_accent_light_bg</item>
+        <item name="android:windowBackground">@color/yellow_accent_light_bg</item>
+        <item name="colorPrimaryContainer">@color/yellow_accent_light_surface</item>
+        <item name="android:statusBarColor">@color/yellow_accent_light_surface</item>
+        <item name="android:navigationBarColor">@color/yellow_accent_light_surface</item>
+        <item name="alextoolAddressBarColor">@color/yellow_accent_light_address_bar</item>
+        <item name="alextoolPopupBackground">@color/yellow_accent_light_surface</item>
+        <item name="alextoolPopupStrokeColor">#1A5C5200</item>
+        <item name="alextoolPopupCheckColor">@color/yellow_accent_light_primary</item>
+        <item name="alextoolButtonBackground">@color/yellow_accent_light_primary</item>
+        <item name="alextoolButtonTextColor">@color/on_surface</item>
+        <item name="alextoolButtonIconTint">@color/on_surface</item>
+        <item name="alextoolIconTint">@color/yellow_accent_light_primary</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.Light.Yellow" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_yellow_light</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_yellow_light</item>
+        <item name="colorOnSurface">@color/on_surface_dark</item>
+        <item name="colorPrimary">@color/yellow_accent_light_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface_dark</item>
+        <item name="android:textColorSecondary">@color/on_surface_dark_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle.Light</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.SoftTint.Yellow.Dark" parent="">
+        <item name="android:colorBackground">@color/yellow_accent_dark_bg_soft</item>
+        <item name="android:windowBackground">@color/yellow_accent_dark_bg_soft</item>
+        <item name="colorSurface">@color/yellow_accent_dark_surface_soft</item>
+        <item name="colorSurfaceContainerHigh">@color/yellow_accent_dark_surface_soft</item>
+        <item name="colorPrimaryContainer">@color/yellow_accent_dark_surface_soft</item>
+        <item name="android:statusBarColor">@color/yellow_accent_dark_surface_soft</item>
+        <item name="android:navigationBarColor">@color/yellow_accent_dark_surface_soft</item>
+        <item name="alextoolAddressBarColor">@color/yellow_accent_dark_address_bar_soft</item>
+        <item name="alextoolPopupBackground">@color/yellow_accent_dark_surface_soft</item>
+        <item name="alextoolCardBackground">@color/yellow_accent_dark_surface_soft</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.SoftTint.Yellow.Light" parent="">
+        <item name="android:colorBackground">@color/yellow_accent_light_bg_soft</item>
+        <item name="android:windowBackground">@color/yellow_accent_light_bg_soft</item>
+        <item name="colorSurface">@color/yellow_accent_light_surface_soft</item>
+        <item name="colorSurfaceContainerHigh">@color/yellow_accent_light_surface_soft</item>
+        <item name="colorPrimaryContainer">@color/yellow_accent_light_surface_soft</item>
+        <item name="android:statusBarColor">@color/yellow_accent_light_surface_soft</item>
+        <item name="android:navigationBarColor">@color/yellow_accent_light_surface_soft</item>
+        <item name="alextoolAddressBarColor">@color/yellow_accent_light_address_bar_soft</item>
+        <item name="alextoolPopupBackground">@color/yellow_accent_light_surface_soft</item>
+        <item name="alextoolCardBackground">@color/yellow_accent_light_surface_soft</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.PureMode.Yellow.Dark" parent="">
+        <item name="android:colorBackground">@color/pure_mode_dark_bg</item>
+        <item name="android:windowBackground">@color/pure_mode_dark_bg</item>
+        <item name="colorSurface">@color/pure_mode_dark_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_dark_surface</item>
+        <item name="colorPrimaryContainer">@color/pure_mode_dark_surface</item>
+        <item name="android:statusBarColor">@color/pure_mode_dark_surface</item>
+        <item name="android:navigationBarColor">@color/pure_mode_dark_surface</item>
+        <item name="alextoolAddressBarColor">@color/yellow_accent_dark_address_bar_soft</item>
+        <item name="alextoolPopupBackground">@color/pure_mode_dark_dialog_surface</item>
+        <item name="alextoolCardBackground">@color/pure_mode_dark_yellow_card</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.PureMode.Yellow.Light" parent="">
+        <item name="android:colorBackground">@color/pure_mode_light_bg</item>
+        <item name="android:windowBackground">@color/pure_mode_light_bg</item>
+        <item name="colorSurface">@color/pure_mode_light_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_light_surface</item>
+        <item name="colorPrimaryContainer">@color/pure_mode_light_surface</item>
+        <item name="android:statusBarColor">@color/pure_mode_light_surface</item>
+        <item name="android:navigationBarColor">@color/pure_mode_light_surface</item>
+        <item name="alextoolAddressBarColor">@color/pure_mode_light_yellow_address_bar</item>
+        <item name="alextoolPopupBackground">@color/pure_mode_light_dialog_surface</item>
+        <item name="alextoolCardBackground">@color/pure_mode_light_yellow_card</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.SoftTint.Yellow.Dark" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_yellow_dark_soft</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_yellow_dark_soft</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorPrimary">@color/yellow_accent_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="android:textColorSecondary">@color/on_surface_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.SoftTint.Yellow.Light" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_yellow_light_soft</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_yellow_light_soft</item>
+        <item name="colorOnSurface">@color/on_surface_dark</item>
+        <item name="colorPrimary">@color/yellow_accent_light_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface_dark</item>
+        <item name="android:textColorSecondary">@color/on_surface_dark_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle.Light</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.PureMode.Yellow.Dark" parent="ThemeOverlay.AlexToolBrowser.Dialog.SoftTint.Yellow.Dark">
+        <item name="colorSurface">@color/pure_mode_dark_dialog_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_dark_dialog_surface</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.PureMode.Yellow.Light" parent="ThemeOverlay.AlexToolBrowser.Dialog.SoftTint.Yellow.Light">
+        <item name="colorSurface">@color/pure_mode_light_dialog_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_light_dialog_surface</item>
+    </style>
+
+    <style name="Theme.AlexToolBrowser.Red" parent="Theme.AlexToolBrowser">
+        <item name="colorPrimary">@color/red_accent_primary</item>
+        <item name="colorOnPrimary">@color/red_accent_dark_bg</item>
+        <item name="colorPrimaryContainer">@color/red_accent_dark_surface</item>
+        <item name="colorSecondary">@color/red_accent_primary</item>
+        <item name="alextoolPopupCheckColor">@color/red_accent_primary</item>
+        <item name="alextoolPopupStrokeColor">#33F07878</item>
+        <item name="alextoolPopupDividerColor">#22F07878</item>
+        <item name="alextoolButtonBackground">@color/red_accent_button</item>
+        <item name="alextoolButtonTextColor">@color/on_surface</item>
+        <item name="alextoolButtonIconTint">@color/on_surface</item>
+        <item name="alextoolIconTint">@color/red_accent_primary</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.Red" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_red_dark</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_red_dark</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorPrimary">@color/red_accent_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="android:textColorSecondary">@color/on_surface_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle</item>
+    </style>
+
+    <style name="Theme.AlexToolBrowser.Dark.Red" parent="Theme.AlexToolBrowser.Dark">
+        <item name="colorPrimary">@color/red_accent_primary</item>
+        <item name="colorPrimaryVariant">@color/red_accent_dark_surface</item>
+        <item name="colorOnPrimary">@color/red_accent_dark_bg</item>
+        <item name="colorSecondary">@color/red_accent_primary</item>
+        <item name="colorOnSecondary">@color/red_accent_dark_bg</item>
+        <item name="colorSurface">@color/red_accent_dark_surface</item>
+        <item name="android:colorBackground">@color/red_accent_dark_bg</item>
+        <item name="android:windowBackground">@color/red_accent_dark_bg</item>
+        <item name="colorPrimaryContainer">@color/red_accent_dark_surface</item>
+        <item name="android:statusBarColor">@color/red_accent_dark_surface</item>
+        <item name="android:navigationBarColor">@color/red_accent_dark_surface</item>
+        <item name="alextoolAddressBarColor">@color/red_accent_dark_address_bar</item>
+        <item name="alextoolPopupBackground">@color/red_accent_dark_surface</item>
+        <item name="alextoolPopupStrokeColor">#33F07878</item>
+        <item name="alextoolPopupCheckColor">@color/red_accent_primary</item>
+        <item name="alextoolPopupDividerColor">#22F07878</item>
+        <item name="alextoolButtonBackground">@color/red_accent_button</item>
+        <item name="alextoolButtonTextColor">@color/on_surface</item>
+        <item name="alextoolButtonIconTint">@color/on_surface</item>
+        <item name="alextoolIconTint">@color/red_accent_primary</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.Dark.Red" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_red_dark</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_red_dark</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorPrimary">@color/red_accent_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="android:textColorSecondary">@color/on_surface_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle</item>
+    </style>
+
+    <style name="Theme.AlexToolBrowser.Light.Red" parent="Theme.AlexToolBrowser.Light">
+        <item name="colorPrimary">@color/red_accent_light_primary</item>
+        <item name="colorPrimaryVariant">@color/red_accent_light_primary</item>
+        <item name="colorOnPrimary">@color/on_surface</item>
+        <item name="colorSecondary">@color/red_accent_light_primary</item>
+        <item name="colorOnSecondary">@color/on_surface</item>
+        <item name="colorSurface">@color/red_accent_light_surface</item>
+        <item name="android:colorBackground">@color/red_accent_light_bg</item>
+        <item name="android:windowBackground">@color/red_accent_light_bg</item>
+        <item name="colorPrimaryContainer">@color/red_accent_light_surface</item>
+        <item name="android:statusBarColor">@color/red_accent_light_surface</item>
+        <item name="android:navigationBarColor">@color/red_accent_light_surface</item>
+        <item name="alextoolAddressBarColor">@color/red_accent_light_address_bar</item>
+        <item name="alextoolPopupBackground">@color/red_accent_light_surface</item>
+        <item name="alextoolPopupStrokeColor">#1AB71C1C</item>
+        <item name="alextoolPopupCheckColor">@color/red_accent_light_primary</item>
+        <item name="alextoolButtonBackground">@color/red_accent_light_primary</item>
+        <item name="alextoolButtonTextColor">@color/on_surface</item>
+        <item name="alextoolButtonIconTint">@color/on_surface</item>
+        <item name="alextoolIconTint">@color/red_accent_light_primary</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.Light.Red" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_red_light</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_red_light</item>
+        <item name="colorOnSurface">@color/on_surface_dark</item>
+        <item name="colorPrimary">@color/red_accent_light_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface_dark</item>
+        <item name="android:textColorSecondary">@color/on_surface_dark_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle.Light</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.SoftTint.Red.Dark" parent="">
+        <item name="android:colorBackground">@color/red_accent_dark_bg_soft</item>
+        <item name="android:windowBackground">@color/red_accent_dark_bg_soft</item>
+        <item name="colorSurface">@color/red_accent_dark_surface_soft</item>
+        <item name="colorSurfaceContainerHigh">@color/red_accent_dark_surface_soft</item>
+        <item name="colorPrimaryContainer">@color/red_accent_dark_surface_soft</item>
+        <item name="android:statusBarColor">@color/red_accent_dark_surface_soft</item>
+        <item name="android:navigationBarColor">@color/red_accent_dark_surface_soft</item>
+        <item name="alextoolAddressBarColor">@color/red_accent_dark_address_bar_soft</item>
+        <item name="alextoolPopupBackground">@color/red_accent_dark_surface_soft</item>
+        <item name="alextoolCardBackground">@color/red_accent_dark_surface_soft</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.SoftTint.Red.Light" parent="">
+        <item name="android:colorBackground">@color/red_accent_light_bg_soft</item>
+        <item name="android:windowBackground">@color/red_accent_light_bg_soft</item>
+        <item name="colorSurface">@color/red_accent_light_surface_soft</item>
+        <item name="colorSurfaceContainerHigh">@color/red_accent_light_surface_soft</item>
+        <item name="colorPrimaryContainer">@color/red_accent_light_surface_soft</item>
+        <item name="android:statusBarColor">@color/red_accent_light_surface_soft</item>
+        <item name="android:navigationBarColor">@color/red_accent_light_surface_soft</item>
+        <item name="alextoolAddressBarColor">@color/red_accent_light_address_bar_soft</item>
+        <item name="alextoolPopupBackground">@color/red_accent_light_surface_soft</item>
+        <item name="alextoolCardBackground">@color/red_accent_light_surface_soft</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.PureMode.Red.Dark" parent="">
+        <item name="android:colorBackground">@color/pure_mode_dark_bg</item>
+        <item name="android:windowBackground">@color/pure_mode_dark_bg</item>
+        <item name="colorSurface">@color/pure_mode_dark_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_dark_surface</item>
+        <item name="colorPrimaryContainer">@color/pure_mode_dark_surface</item>
+        <item name="android:statusBarColor">@color/pure_mode_dark_surface</item>
+        <item name="android:navigationBarColor">@color/pure_mode_dark_surface</item>
+        <item name="alextoolAddressBarColor">@color/red_accent_dark_address_bar_soft</item>
+        <item name="alextoolPopupBackground">@color/pure_mode_dark_dialog_surface</item>
+        <item name="alextoolCardBackground">@color/pure_mode_dark_red_card</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.PureMode.Red.Light" parent="">
+        <item name="android:colorBackground">@color/pure_mode_light_bg</item>
+        <item name="android:windowBackground">@color/pure_mode_light_bg</item>
+        <item name="colorSurface">@color/pure_mode_light_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_light_surface</item>
+        <item name="colorPrimaryContainer">@color/pure_mode_light_surface</item>
+        <item name="android:statusBarColor">@color/pure_mode_light_surface</item>
+        <item name="android:navigationBarColor">@color/pure_mode_light_surface</item>
+        <item name="alextoolAddressBarColor">@color/pure_mode_light_red_address_bar</item>
+        <item name="alextoolPopupBackground">@color/pure_mode_light_dialog_surface</item>
+        <item name="alextoolCardBackground">@color/pure_mode_light_red_card</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.SoftTint.Red.Dark" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_red_dark_soft</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_red_dark_soft</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorPrimary">@color/red_accent_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="android:textColorSecondary">@color/on_surface_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.SoftTint.Red.Light" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_red_light_soft</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_red_light_soft</item>
+        <item name="colorOnSurface">@color/on_surface_dark</item>
+        <item name="colorPrimary">@color/red_accent_light_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface_dark</item>
+        <item name="android:textColorSecondary">@color/on_surface_dark_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle.Light</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.PureMode.Red.Dark" parent="ThemeOverlay.AlexToolBrowser.Dialog.SoftTint.Red.Dark">
+        <item name="colorSurface">@color/pure_mode_dark_dialog_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_dark_dialog_surface</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.PureMode.Red.Light" parent="ThemeOverlay.AlexToolBrowser.Dialog.SoftTint.Red.Light">
+        <item name="colorSurface">@color/pure_mode_light_dialog_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_light_dialog_surface</item>
+    </style>
+
+    <style name="Theme.AlexToolBrowser.Orange" parent="Theme.AlexToolBrowser">
+        <item name="colorPrimary">@color/orange_accent_primary</item>
+        <item name="colorOnPrimary">@color/orange_accent_dark_bg</item>
+        <item name="colorPrimaryContainer">@color/orange_accent_dark_surface</item>
+        <item name="colorSecondary">@color/orange_accent_primary</item>
+        <item name="alextoolPopupCheckColor">@color/orange_accent_primary</item>
+        <item name="alextoolPopupStrokeColor">#33FFAD66</item>
+        <item name="alextoolPopupDividerColor">#22FFAD66</item>
+        <item name="alextoolButtonBackground">@color/orange_accent_button</item>
+        <item name="alextoolButtonTextColor">@color/on_surface</item>
+        <item name="alextoolButtonIconTint">@color/on_surface</item>
+        <item name="alextoolIconTint">@color/orange_accent_primary</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.Orange" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_orange_dark</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_orange_dark</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorPrimary">@color/orange_accent_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="android:textColorSecondary">@color/on_surface_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle</item>
+    </style>
+
+    <style name="Theme.AlexToolBrowser.Dark.Orange" parent="Theme.AlexToolBrowser.Dark">
+        <item name="colorPrimary">@color/orange_accent_primary</item>
+        <item name="colorPrimaryVariant">@color/orange_accent_dark_surface</item>
+        <item name="colorOnPrimary">@color/orange_accent_dark_bg</item>
+        <item name="colorSecondary">@color/orange_accent_primary</item>
+        <item name="colorOnSecondary">@color/orange_accent_dark_bg</item>
+        <item name="colorSurface">@color/orange_accent_dark_surface</item>
+        <item name="android:colorBackground">@color/orange_accent_dark_bg</item>
+        <item name="android:windowBackground">@color/orange_accent_dark_bg</item>
+        <item name="colorPrimaryContainer">@color/orange_accent_dark_surface</item>
+        <item name="android:statusBarColor">@color/orange_accent_dark_surface</item>
+        <item name="android:navigationBarColor">@color/orange_accent_dark_surface</item>
+        <item name="alextoolAddressBarColor">@color/orange_accent_dark_address_bar</item>
+        <item name="alextoolPopupBackground">@color/orange_accent_dark_surface</item>
+        <item name="alextoolPopupStrokeColor">#33FFAD66</item>
+        <item name="alextoolPopupCheckColor">@color/orange_accent_primary</item>
+        <item name="alextoolPopupDividerColor">#22FFAD66</item>
+        <item name="alextoolButtonBackground">@color/orange_accent_button</item>
+        <item name="alextoolButtonTextColor">@color/on_surface</item>
+        <item name="alextoolButtonIconTint">@color/on_surface</item>
+        <item name="alextoolIconTint">@color/orange_accent_primary</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.Dark.Orange" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_orange_dark</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_orange_dark</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorPrimary">@color/orange_accent_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="android:textColorSecondary">@color/on_surface_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle</item>
+    </style>
+
+    <style name="Theme.AlexToolBrowser.Light.Orange" parent="Theme.AlexToolBrowser.Light">
+        <item name="colorPrimary">@color/orange_accent_light_primary</item>
+        <item name="colorPrimaryVariant">@color/orange_accent_light_primary</item>
+        <item name="colorOnPrimary">@color/on_surface</item>
+        <item name="colorSecondary">@color/orange_accent_light_primary</item>
+        <item name="colorOnSecondary">@color/on_surface</item>
+        <item name="colorSurface">@color/orange_accent_light_surface</item>
+        <item name="android:colorBackground">@color/orange_accent_light_bg</item>
+        <item name="android:windowBackground">@color/orange_accent_light_bg</item>
+        <item name="colorPrimaryContainer">@color/orange_accent_light_surface</item>
+        <item name="android:statusBarColor">@color/orange_accent_light_surface</item>
+        <item name="android:navigationBarColor">@color/orange_accent_light_surface</item>
+        <item name="alextoolAddressBarColor">@color/orange_accent_light_address_bar</item>
+        <item name="alextoolPopupBackground">@color/orange_accent_light_surface</item>
+        <item name="alextoolPopupStrokeColor">#1A7A3500</item>
+        <item name="alextoolPopupCheckColor">@color/orange_accent_light_primary</item>
+        <item name="alextoolButtonBackground">@color/orange_accent_light_primary</item>
+        <item name="alextoolButtonTextColor">@color/on_surface</item>
+        <item name="alextoolButtonIconTint">@color/on_surface</item>
+        <item name="alextoolIconTint">@color/orange_accent_light_primary</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.Light.Orange" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_orange_light</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_orange_light</item>
+        <item name="colorOnSurface">@color/on_surface_dark</item>
+        <item name="colorPrimary">@color/orange_accent_light_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface_dark</item>
+        <item name="android:textColorSecondary">@color/on_surface_dark_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle.Light</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.SoftTint.Orange.Dark" parent="">
+        <item name="android:colorBackground">@color/orange_accent_dark_bg_soft</item>
+        <item name="android:windowBackground">@color/orange_accent_dark_bg_soft</item>
+        <item name="colorSurface">@color/orange_accent_dark_surface_soft</item>
+        <item name="colorSurfaceContainerHigh">@color/orange_accent_dark_surface_soft</item>
+        <item name="colorPrimaryContainer">@color/orange_accent_dark_surface_soft</item>
+        <item name="android:statusBarColor">@color/orange_accent_dark_surface_soft</item>
+        <item name="android:navigationBarColor">@color/orange_accent_dark_surface_soft</item>
+        <item name="alextoolAddressBarColor">@color/orange_accent_dark_address_bar_soft</item>
+        <item name="alextoolPopupBackground">@color/orange_accent_dark_surface_soft</item>
+        <item name="alextoolCardBackground">@color/orange_accent_dark_surface_soft</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.SoftTint.Orange.Light" parent="">
+        <item name="android:colorBackground">@color/orange_accent_light_bg_soft</item>
+        <item name="android:windowBackground">@color/orange_accent_light_bg_soft</item>
+        <item name="colorSurface">@color/orange_accent_light_surface_soft</item>
+        <item name="colorSurfaceContainerHigh">@color/orange_accent_light_surface_soft</item>
+        <item name="colorPrimaryContainer">@color/orange_accent_light_surface_soft</item>
+        <item name="android:statusBarColor">@color/orange_accent_light_surface_soft</item>
+        <item name="android:navigationBarColor">@color/orange_accent_light_surface_soft</item>
+        <item name="alextoolAddressBarColor">@color/orange_accent_light_address_bar_soft</item>
+        <item name="alextoolPopupBackground">@color/orange_accent_light_surface_soft</item>
+        <item name="alextoolCardBackground">@color/orange_accent_light_surface_soft</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.PureMode.Orange.Dark" parent="">
+        <item name="android:colorBackground">@color/pure_mode_dark_bg</item>
+        <item name="android:windowBackground">@color/pure_mode_dark_bg</item>
+        <item name="colorSurface">@color/pure_mode_dark_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_dark_surface</item>
+        <item name="colorPrimaryContainer">@color/pure_mode_dark_surface</item>
+        <item name="android:statusBarColor">@color/pure_mode_dark_surface</item>
+        <item name="android:navigationBarColor">@color/pure_mode_dark_surface</item>
+        <item name="alextoolAddressBarColor">@color/orange_accent_dark_address_bar_soft</item>
+        <item name="alextoolPopupBackground">@color/pure_mode_dark_dialog_surface</item>
+        <item name="alextoolCardBackground">@color/pure_mode_dark_orange_card</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.PureMode.Orange.Light" parent="">
+        <item name="android:colorBackground">@color/pure_mode_light_bg</item>
+        <item name="android:windowBackground">@color/pure_mode_light_bg</item>
+        <item name="colorSurface">@color/pure_mode_light_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_light_surface</item>
+        <item name="colorPrimaryContainer">@color/pure_mode_light_surface</item>
+        <item name="android:statusBarColor">@color/pure_mode_light_surface</item>
+        <item name="android:navigationBarColor">@color/pure_mode_light_surface</item>
+        <item name="alextoolAddressBarColor">@color/pure_mode_light_orange_address_bar</item>
+        <item name="alextoolPopupBackground">@color/pure_mode_light_dialog_surface</item>
+        <item name="alextoolCardBackground">@color/pure_mode_light_orange_card</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.SoftTint.Orange.Dark" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_orange_dark_soft</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_orange_dark_soft</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorPrimary">@color/orange_accent_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="android:textColorSecondary">@color/on_surface_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.SoftTint.Orange.Light" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_orange_light_soft</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_orange_light_soft</item>
+        <item name="colorOnSurface">@color/on_surface_dark</item>
+        <item name="colorPrimary">@color/orange_accent_light_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface_dark</item>
+        <item name="android:textColorSecondary">@color/on_surface_dark_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle.Light</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.PureMode.Orange.Dark" parent="ThemeOverlay.AlexToolBrowser.Dialog.SoftTint.Orange.Dark">
+        <item name="colorSurface">@color/pure_mode_dark_dialog_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_dark_dialog_surface</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.PureMode.Orange.Light" parent="ThemeOverlay.AlexToolBrowser.Dialog.SoftTint.Orange.Light">
+        <item name="colorSurface">@color/pure_mode_light_dialog_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_light_dialog_surface</item>
+    </style>
+
+    <style name="Theme.AlexToolBrowser.Green" parent="Theme.AlexToolBrowser">
+        <item name="colorPrimary">@color/green_accent_primary</item>
+        <item name="colorOnPrimary">@color/green_accent_dark_bg</item>
+        <item name="colorPrimaryContainer">@color/green_accent_dark_surface</item>
+        <item name="colorSecondary">@color/green_accent_primary</item>
+        <item name="alextoolPopupCheckColor">@color/green_accent_primary</item>
+        <item name="alextoolPopupStrokeColor">#336BD490</item>
+        <item name="alextoolPopupDividerColor">#226BD490</item>
+        <item name="alextoolButtonBackground">@color/green_accent_button</item>
+        <item name="alextoolButtonTextColor">@color/on_surface</item>
+        <item name="alextoolButtonIconTint">@color/on_surface</item>
+        <item name="alextoolIconTint">@color/green_accent_primary</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.Green" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_green_dark</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_green_dark</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorPrimary">@color/green_accent_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="android:textColorSecondary">@color/on_surface_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle</item>
+    </style>
+
+    <style name="Theme.AlexToolBrowser.Dark.Green" parent="Theme.AlexToolBrowser.Dark">
+        <item name="colorPrimary">@color/green_accent_primary</item>
+        <item name="colorPrimaryVariant">@color/green_accent_dark_surface</item>
+        <item name="colorOnPrimary">@color/green_accent_dark_bg</item>
+        <item name="colorSecondary">@color/green_accent_primary</item>
+        <item name="colorOnSecondary">@color/green_accent_dark_bg</item>
+        <item name="colorSurface">@color/green_accent_dark_surface</item>
+        <item name="android:colorBackground">@color/green_accent_dark_bg</item>
+        <item name="android:windowBackground">@color/green_accent_dark_bg</item>
+        <item name="colorPrimaryContainer">@color/green_accent_dark_surface</item>
+        <item name="android:statusBarColor">@color/green_accent_dark_surface</item>
+        <item name="android:navigationBarColor">@color/green_accent_dark_surface</item>
+        <item name="alextoolAddressBarColor">@color/green_accent_dark_address_bar</item>
+        <item name="alextoolPopupBackground">@color/green_accent_dark_surface</item>
+        <item name="alextoolPopupStrokeColor">#336BD490</item>
+        <item name="alextoolPopupCheckColor">@color/green_accent_primary</item>
+        <item name="alextoolPopupDividerColor">#226BD490</item>
+        <item name="alextoolButtonBackground">@color/green_accent_button</item>
+        <item name="alextoolButtonTextColor">@color/on_surface</item>
+        <item name="alextoolButtonIconTint">@color/on_surface</item>
+        <item name="alextoolIconTint">@color/green_accent_primary</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.Dark.Green" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_green_dark</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_green_dark</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorPrimary">@color/green_accent_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="android:textColorSecondary">@color/on_surface_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle</item>
+    </style>
+
+    <style name="Theme.AlexToolBrowser.Light.Green" parent="Theme.AlexToolBrowser.Light">
+        <item name="colorPrimary">@color/green_accent_light_primary</item>
+        <item name="colorPrimaryVariant">@color/green_accent_light_primary</item>
+        <item name="colorOnPrimary">@color/on_surface</item>
+        <item name="colorSecondary">@color/green_accent_light_primary</item>
+        <item name="colorOnSecondary">@color/on_surface</item>
+        <item name="colorSurface">@color/green_accent_light_surface</item>
+        <item name="android:colorBackground">@color/green_accent_light_bg</item>
+        <item name="android:windowBackground">@color/green_accent_light_bg</item>
+        <item name="colorPrimaryContainer">@color/green_accent_light_surface</item>
+        <item name="android:statusBarColor">@color/green_accent_light_surface</item>
+        <item name="android:navigationBarColor">@color/green_accent_light_surface</item>
+        <item name="alextoolAddressBarColor">@color/green_accent_light_address_bar</item>
+        <item name="alextoolPopupBackground">@color/green_accent_light_surface</item>
+        <item name="alextoolPopupStrokeColor">#1A1A6B3A</item>
+        <item name="alextoolPopupCheckColor">@color/green_accent_light_primary</item>
+        <item name="alextoolButtonBackground">@color/green_accent_light_primary</item>
+        <item name="alextoolButtonTextColor">@color/on_surface</item>
+        <item name="alextoolButtonIconTint">@color/on_surface</item>
+        <item name="alextoolIconTint">@color/green_accent_light_primary</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.Light.Green" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_green_light</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_green_light</item>
+        <item name="colorOnSurface">@color/on_surface_dark</item>
+        <item name="colorPrimary">@color/green_accent_light_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface_dark</item>
+        <item name="android:textColorSecondary">@color/on_surface_dark_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle.Light</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.SoftTint.Green.Dark" parent="">
+        <item name="android:colorBackground">@color/green_accent_dark_bg_soft</item>
+        <item name="android:windowBackground">@color/green_accent_dark_bg_soft</item>
+        <item name="colorSurface">@color/green_accent_dark_surface_soft</item>
+        <item name="colorSurfaceContainerHigh">@color/green_accent_dark_surface_soft</item>
+        <item name="colorPrimaryContainer">@color/green_accent_dark_surface_soft</item>
+        <item name="android:statusBarColor">@color/green_accent_dark_surface_soft</item>
+        <item name="android:navigationBarColor">@color/green_accent_dark_surface_soft</item>
+        <item name="alextoolAddressBarColor">@color/green_accent_dark_address_bar_soft</item>
+        <item name="alextoolPopupBackground">@color/green_accent_dark_surface_soft</item>
+        <item name="alextoolCardBackground">@color/green_accent_dark_surface_soft</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.SoftTint.Green.Light" parent="">
+        <item name="android:colorBackground">@color/green_accent_light_bg_soft</item>
+        <item name="android:windowBackground">@color/green_accent_light_bg_soft</item>
+        <item name="colorSurface">@color/green_accent_light_surface_soft</item>
+        <item name="colorSurfaceContainerHigh">@color/green_accent_light_surface_soft</item>
+        <item name="colorPrimaryContainer">@color/green_accent_light_surface_soft</item>
+        <item name="android:statusBarColor">@color/green_accent_light_surface_soft</item>
+        <item name="android:navigationBarColor">@color/green_accent_light_surface_soft</item>
+        <item name="alextoolAddressBarColor">@color/green_accent_light_address_bar_soft</item>
+        <item name="alextoolPopupBackground">@color/green_accent_light_surface_soft</item>
+        <item name="alextoolCardBackground">@color/green_accent_light_surface_soft</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.PureMode.Green.Dark" parent="">
+        <item name="android:colorBackground">@color/pure_mode_dark_bg</item>
+        <item name="android:windowBackground">@color/pure_mode_dark_bg</item>
+        <item name="colorSurface">@color/pure_mode_dark_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_dark_surface</item>
+        <item name="colorPrimaryContainer">@color/pure_mode_dark_surface</item>
+        <item name="android:statusBarColor">@color/pure_mode_dark_surface</item>
+        <item name="android:navigationBarColor">@color/pure_mode_dark_surface</item>
+        <item name="alextoolAddressBarColor">@color/green_accent_dark_address_bar_soft</item>
+        <item name="alextoolPopupBackground">@color/pure_mode_dark_dialog_surface</item>
+        <item name="alextoolCardBackground">@color/pure_mode_dark_green_card</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.SurfaceIntensity.PureMode.Green.Light" parent="">
+        <item name="android:colorBackground">@color/pure_mode_light_bg</item>
+        <item name="android:windowBackground">@color/pure_mode_light_bg</item>
+        <item name="colorSurface">@color/pure_mode_light_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_light_surface</item>
+        <item name="colorPrimaryContainer">@color/pure_mode_light_surface</item>
+        <item name="android:statusBarColor">@color/pure_mode_light_surface</item>
+        <item name="android:navigationBarColor">@color/pure_mode_light_surface</item>
+        <item name="alextoolAddressBarColor">@color/pure_mode_light_green_address_bar</item>
+        <item name="alextoolPopupBackground">@color/pure_mode_light_dialog_surface</item>
+        <item name="alextoolCardBackground">@color/pure_mode_light_green_card</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.SoftTint.Green.Dark" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_green_dark_soft</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_green_dark_soft</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorPrimary">@color/green_accent_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface</item>
+        <item name="android:textColorSecondary">@color/on_surface_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.SoftTint.Green.Light" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearanceMediumComponent">@style/AlexToolDialogShape</item>
+        <item name="colorSurface">@color/dialog_card_green_light_soft</item>
+        <item name="colorSurfaceContainerHigh">@color/dialog_card_green_light_soft</item>
+        <item name="colorOnSurface">@color/on_surface_dark</item>
+        <item name="colorPrimary">@color/green_accent_light_primary</item>
+        <item name="android:textColorPrimary">@color/on_surface_dark</item>
+        <item name="android:textColorSecondary">@color/on_surface_dark_medium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AlexToolDialogTitle.Light</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.PureMode.Green.Dark" parent="ThemeOverlay.AlexToolBrowser.Dialog.SoftTint.Green.Dark">
+        <item name="colorSurface">@color/pure_mode_dark_dialog_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_dark_dialog_surface</item>
+    </style>
+
+    <style name="ThemeOverlay.AlexToolBrowser.Dialog.PureMode.Green.Light" parent="ThemeOverlay.AlexToolBrowser.Dialog.SoftTint.Green.Light">
+        <item name="colorSurface">@color/pure_mode_light_dialog_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/pure_mode_light_dialog_surface</item>
+    </style>
+
+    <style name="Widget.AlexTool.Slider" parent="Widget.Material3.Slider">
+        <item name="trackColorInactive">?attr/alextoolDividerColor</item>
+        <item name="tickColorInactive">?attr/alextoolDividerColor</item>
+    </style>
+
+    <style name="Widget.AlexTool.SearchBar" parent="Widget.Material3.SearchBar">
+        <item name="backgroundTint">?attr/alextoolAddressBarColor</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:layout_marginStart">0dp</item>
+        <item name="android:layout_marginEnd">0dp</item>
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
+        <item name="hintTextColor">?attr/alextoolSecondaryTextColor</item>
+        <item name="android:textColorHint">?attr/alextoolSecondaryTextColor</item>
+        <item name="strokeWidth">0dp</item>
+        <item name="navigationIconTint">?attr/alextoolIconTint</item>
+    </style>
+</resources>

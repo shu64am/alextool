@@ -1,0 +1,14 @@
+.gradle/
+build/
+app/build/
+app/release/*.apk
+app/release_keystore.jks
+local.properties
+.idea/
+captures/
+*.iml
+.gradle
+.DS_Store
+video_*.md
+*.log
+EXTRA_FEATURE_STATE.md

@@ -1,0 +1,3 @@
+# Keep launcher icons and drawables referenced from Kotlin code
+-keepnames class com.alexmodzofc.tool.R$drawable
+-keepnames class com.alexmodzofc.tool.R$mipmap

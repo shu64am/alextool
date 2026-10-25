@@ -1,0 +1,73 @@
+package com.alexmodzofc.tool.downloads
+
+import android.app.NotificationManager
+import android.content.Context
+import android.content.Intent
+import android.content.pm.ServiceInfo
+import android.os.Build
+import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.lifecycleScope
+import com.alexmodzofc.tool.util.LocaleHelper
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+
+/**
+ * Keeps the process alive while any download is actively transferring. [LifecycleService] provides
+ * [lifecycleScope], which replaces the previous [android.os.Handler]-based 1-second polling loop
+ * with a direct reactive collection of [AlexToolDownloadManager.downloadsFlow]: the service now reacts
+ * to state changes as they happen rather than checking on a fixed interval. [collectLatest] with a
+ * trailing [delay] reproduces the old "wait a second before actually stopping" debounce, so a
+ * download finishing right as the next one starts doesn't cause a stop-then-immediately-restart.
+ * The same collection keeps the active count on the summary notification current.
+ */
+class DownloadForegroundService : LifecycleService() {
+
+    companion object {
+        internal const val FOREGROUND_ID = 9001
+
+        fun start(context: Context) {
+            val intent = Intent(context, DownloadForegroundService::class.java)
+            androidx.core.content.ContextCompat.startForegroundService(context, intent)
+        }
+    }
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LocaleHelper.wrapContext(newBase))
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        AlexToolDownloadManager.createNotificationChannel(this)
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
+        val notification = DownloadNotificationHelper.buildSummaryNotification(this, 0)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(FOREGROUND_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+        } else {
+            startForeground(FOREGROUND_ID, notification)
+        }
+
+        val nm = getSystemService(NotificationManager::class.java)
+
+        lifecycleScope.launch {
+            AlexToolDownloadManager.downloadsFlow
+                .map { list -> list.count { it.status in DownloadStatus.ACTIVELY_WORKING } }
+                .distinctUntilChanged()
+                .collectLatest { activeCount ->
+                    if (activeCount > 0) {
+                        nm.notify(FOREGROUND_ID, DownloadNotificationHelper.buildSummaryNotification(this@DownloadForegroundService, activeCount))
+                    } else {
+                        delay(1000)
+                        stopSelf()
+                    }
+                }
+        }
+
+        return START_STICKY
+    }
+}
