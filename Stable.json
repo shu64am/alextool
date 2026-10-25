@@ -1,9 +1,9 @@
 {
-  "version": "1.2.38",
-  "versionCode": 59,
-  "changelog": "Final maintenance release with update-system verification.",
+  "version": "1.2.39",
+  "versionCode": 60,
+  "changelog": "Final release with refreshed Aincred result UI and update-system metadata.",
   "downloads": {
-    "universal": "https://github.com/shu64am/alextool/releases/download/v1.2.38/alextool_universal_v1_2_38.apk",
-    "arm64-v8a": "https://github.com/shu64am/alextool/releases/download/v1.2.38/alextool_arm64_v1_2_38.apk"
+    "universal": "https://github.com/shu64am/alextool/releases/download/v1.2.39/alextool_universal_v1_2_39.apk",
+    "arm64-v8a": "https://github.com/shu64am/alextool/releases/download/v1.2.39/alextool_arm64_v1_2_39.apk"
   }
 }
