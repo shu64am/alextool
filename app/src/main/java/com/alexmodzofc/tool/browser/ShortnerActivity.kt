@@ -67,7 +67,7 @@ class ShortnerActivity : Activity() {
                         val script = assets.open("shortner/0.js").bufferedReader().use { it.readText() }
                         // 0.js must run in the top-level page context so it can
                         // use the gateway's window, cookies, and session state.
-                        v.evaluateJavascript(script, null)
+                        v.evaluateJavascript(script) { v.evaluateJavascript(brandExtensionUiScript(), null) }
                     }
                 }
             }
@@ -130,6 +130,25 @@ class ShortnerActivity : Activity() {
     }
 
     private fun showPortal() { portal.visibility = View.VISIBLE }
+    private fun brandExtensionUiScript(): String = """
+        (function(){
+          if(window.__alexBrandObserver)return;
+          window.__alexBrandObserver=true;
+          function brand(){
+            var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT),n;
+            while(n=w.nextNode()){
+              if(n.nodeValue.indexOf('XTEAM')>=0)n.nodeValue=n.nodeValue.replace(/XTEAM/g,'THE ALEX MODZ');
+              if(n.nodeValue.indexOf('@mehedy4644')>=0)n.nodeValue=n.nodeValue.replace(/@mehedy4644/g,'@alexmodzofc');
+            }
+            document.querySelectorAll('a').forEach(function(a){
+              if((a.innerText||'').toLowerCase().indexOf('telegram')>=0||String(a.href).indexOf('t.me')>=0){a.href='https://t.me/alexmodzofc';}
+            });
+          }
+          brand();
+          new MutationObserver(brand).observe(document.documentElement,{childList:true,subtree:true,characterData:true});
+          setInterval(brand,700);
+        })();
+    """.trimIndent()
     private fun closePortal() { AincredKeySession.cancel(); injectedExtensionUrl = null; portal.stopLoading(); finish() }
     private fun startKeySession() { showPortal(); AincredKeySession.startExtensionOnly(portal) }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
