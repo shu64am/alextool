@@ -1,9 +1,9 @@
 {
-  "version": "1.2.37",
-  "versionCode": 58,
-  "changelog": "Maintenance update and update-system verification release.",
+  "version": "1.2.38",
+  "versionCode": 59,
+  "changelog": "Final maintenance release with update-system verification.",
   "downloads": {
-    "universal": "https://github.com/shu64am/alextool/releases/download/v1.2.37/alextool_universal_v1_2_37.apk",
-    "arm64-v8a": "https://github.com/shu64am/alextool/releases/download/v1.2.37/alextool_arm64_v1_2_37.apk"
+    "universal": "https://github.com/shu64am/alextool/releases/download/v1.2.38/alextool_universal_v1_2_38.apk",
+    "arm64-v8a": "https://github.com/shu64am/alextool/releases/download/v1.2.38/alextool_arm64_v1_2_38.apk"
   }
 }
